@@ -1942,7 +1942,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     const canvases = document.querySelectorAll(".demo-canvas, .shader-canvas");
     canvases.forEach((canvas) => {
-      canvas.style.border = "2px solid rgba(255, 0, 0, 0.3)";
+      canvas.style.border = "2px solid rgba(5, 5, 5, 0.3)";
     });
   }, 1000);
 });
