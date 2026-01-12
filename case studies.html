@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Case Studies | Cynthia Kiprop</title>
+    <link rel="stylesheet" href="../css/case-studies.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #818cf8;
+        --secondary: #c4b5fd;
+        --dark: #0f172a;
+        --dark-light: #1e293b;
+        --text: #e2e8f0;
+        --text-light: #94a3b8;
+        /* Case Studies Styles */
+        body {
+          margin: 0;
+          padding: 0;
+          background: #0f172a;
+          color: #e2e8f0;
+          font-family: "Segoe UI", system-ui, sans-serif;
+          line-height: 1.6;
+        }
+
+        .case-nav {
+          background: rgba(15, 23, 42, 0.95);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 20px 5%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        }
+
+        .back-home {
+          color: #94a3b8;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: color 0.3s ease;
+        }
+
+        .back-home:hover {
+          color: #818cf8;
+        }
+
+        .case-nav h1 {
+          margin: 0;
+          font-size: 1.8rem;
+          background: linear-gradient(135deg, #818cf8, #c4b5fd);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .nav-stats {
+          display: flex;
+          gap: 20px;
+        }
+
+        .stat {
+          color: #94a3b8;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .case-studies-container {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 40px 5%;
+        }
+
+        .case-study-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 30px;
+          margin-bottom: 60px;
+        }
+
+        .case-card {
+          background: rgba(30, 41, 59, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 25px;
+          text-decoration: none;
+          color: inherit;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .case-card:hover {
+          border-color: rgba(129, 140, 248, 0.3);
+          transform: translateY(-5px);
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .case-badge {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: linear-gradient(135deg, #818cf8, #6366f1);
+          color: white;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+
+        .case-header {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 15px;
+        }
+
+        .case-icon {
+          font-size: 2.5rem;
+        }
+
+        .case-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .case-category {
+          color: #818cf8;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .case-duration {
+          color: #94a3b8;
+          font-size: 0.8rem;
+        }
+
+        .case-title {
+          color: #f8fafc;
+          font-size: 1.3rem;
+          margin: 0 0 10px 0;
+        }
+
+        .case-desc {
+          color: #cbd5e1;
+          font-size: 0.95rem;
+          margin-bottom: 20px;
+          line-height: 1.5;
+        }
+
+        .case-tech {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 20px;
+        }
+
+        .tech-tag {
+          background: rgba(129, 140, 248, 0.1);
+          color: #818cf8;
+          padding: 4px 10px;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          border: 1px solid rgba(129, 140, 248, 0.2);
+        }
+
+        .case-stats {
+          display: flex;
+          gap: 20px;
+          padding-top: 15px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #94a3b8;
+          font-size: 0.85rem;
+        }
+
+        .stat-item i {
+          color: #818cf8;
+        }
+
+        .case-studies-intro {
+          background: rgba(30, 41, 59, 0.4);
+          border-radius: 20px;
+          padding: 40px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          margin-top: 40px;
+        }
+
+        .case-studies-intro h2 {
+          color: #f8fafc;
+          font-size: 2rem;
+          margin-bottom: 15px;
+        }
+
+        .case-studies-intro > p {
+          color: #cbd5e1;
+          font-size: 1.1rem;
+          max-width: 800px;
+          margin-bottom: 40px;
+        }
+
+        .intro-features {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 30px;
+        }
+
+        .feature {
+          text-align: center;
+          padding: 25px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature i {
+          font-size: 2.5rem;
+          color: #818cf8;
+          margin-bottom: 15px;
+        }
+
+        .feature h4 {
+          color: #f8fafc;
+          margin: 0 0 10px 0;
+          font-size: 1.2rem;
+        }
+
+        .feature p {
+          color: #94a3b8;
+          font-size: 0.9rem;
+          margin: 0;
+          line-height: 1.5;
+        }
+
+        .case-footer {
+          text-align: center;
+          padding: 30px 5%;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          margin-top: 60px;
+          color: #94a3b8;
+          font-size: 0.9rem;
+        }
+
+        .contact-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          color: #818cf8;
+          text-decoration: none;
+          margin-top: 15px;
+          padding: 10px 20px;
+          background: rgba(129, 140, 248, 0.1);
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+          background: rgba(129, 140, 248, 0.2);
+          transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .case-nav {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+          }
+
+          .case-study-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .intro-features {
+            grid-template-columns: 1fr;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="case-nav">
+      <a href="../index.html" class="back-home">
+        <i class="fas fa-arrow-left"></i>
+        Back to Portfolio
+      </a>
+      <h1>Case Studies</h1>
+      <div class="nav-stats">
+        <span class="stat">
+          <i class="fas fa-project-diagram"></i>
+          6 Projects
+        </span>
+        <span class="stat">
+          <i class="fas fa-code"></i>
+          15K+ Lines
+        </span>
+      </div>
+    </nav>
+
+    <main class="case-studies-container">
+      <div class="case-study-grid">
+        <!-- Climate Dashboard -->
+        <a href="climate-dashboard-demo.html" class="case-card">
+          <div class="case-badge">Featured</div>
+          <div class="case-header">
+            <div class="case-icon">🌍</div>
+            <div class="case-meta">
+              <span class="case-category">Data Visualization</span>
+              <span class="case-duration">4 Weeks</span>
+            </div>
+          </div>
+          <h3 class="case-title">Climate Dashboard</h3>
+          <p class="case-desc">
+            Interactive visualization of global climate data with real-time
+            updates and predictive modeling.
+          </p>
+          <div class="case-tech">
+            <span class="tech-tag">D3.js</span>
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">WebGL</span>
+          </div>
+          <div class="case-stats">
+            <div class="stat-item">
+              <i class="fas fa-chart-line"></i>
+              <span>12 Visualizations</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-database"></i>
+              <span>50K+ Data Points</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- AI Art Generator -->
+        <a href="ai-art-generator.html" class="case-card">
+          <div class="case-header">
+            <div class="case-icon">🤖</div>
+            <div class="case-meta">
+              <span class="case-category">AI/ML</span>
+              <span class="case-duration">3 Weeks</span>
+            </div>
+          </div>
+          <h3 class="case-title">AI Art Generator</h3>
+          <p class="case-desc">
+            Neural network-powered art creation tool with style transfer and
+            real-time generation.
+          </p>
+          <div class="case-tech">
+            <span class="tech-tag">TensorFlow.js</span>
+            <span class="tech-tag">Canvas API</span>
+            <span class="tech-tag">Web Workers</span>
+          </div>
+          <div class="case-stats">
+            <div class="stat-item">
+              <i class="fas fa-palette"></i>
+              <span>8 Art Styles</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-brain"></i>
+              <span>Neural Network</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Interactive Music Visualizer -->
+        <a href="interactive-music.html" class="case-card">
+          <div class="case-header">
+            <div class="case-icon">🎵</div>
+            <div class="case-meta">
+              <span class="case-category">Audio Processing</span>
+              <span class="case-duration">2 Weeks</span>
+            </div>
+          </div>
+          <h3 class="case-title">Interactive Music Visualizer</h3>
+          <p class="case-desc">
+            Real-time audio visualization with Web Audio API and particle
+            systems.
+          </p>
+          <div class="case-tech">
+            <span class="tech-tag">Web Audio API</span>
+            <span class="tech-tag">Three.js</span>
+            <span class="tech-tag">Shader</span>
+          </div>
+          <div class="case-stats">
+            <div class="stat-item">
+              <i class="fas fa-sliders-h"></i>
+              <span>Real-time FFT</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-eye"></i>
+              <span>4 Visual Modes</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Space Defender Game -->
+        <a href="space-defender.html" class="case-card">
+          <div class="case-header">
+            <div class="case-icon">🚀</div>
+            <div class="case-meta">
+              <span class="case-category">Game Development</span>
+              <span class="case-duration">3 Weeks</span>
+            </div>
+          </div>
+          <h3 class="case-title">Space Defender Game</h3>
+          <p class="case-desc">
+            WebGL-based space shooter with particle systems and physics
+            simulation.
+          </p>
+          <div class="case-tech">
+            <span class="tech-tag">WebGL</span>
+            <span class="tech-tag">Physics Engine</span>
+            <span class="tech-tag">Game AI</span>
+          </div>
+          <div class="case-stats">
+            <div class="stat-item">
+              <i class="fas fa-gamepad"></i>
+              <span>60 FPS Gameplay</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-star"></i>
+              <span>Particle System</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="case-studies-intro">
+        <h2>Detailed Project Analysis</h2>
+        <p>
+          Each case study provides in-depth technical breakdowns, design
+          decisions, challenges faced, and lessons learned from real projects.
+        </p>
+
+        <div class="intro-features">
+          <div class="feature">
+            <i class="fas fa-code"></i>
+            <h4>Technical Deep Dive</h4>
+            <p>Complete code architecture and implementation details</p>
+          </div>
+          <div class="feature">
+            <i class="fas fa-chart-bar"></i>
+            <h4>Performance Metrics</h4>
+            <p>Load times, optimization techniques, and benchmarks</p>
+          </div>
+          <div class="feature">
+            <i class="fas fa-lightbulb"></i>
+            <h4>Problem Solving</h4>
+            <p>Challenges encountered and innovative solutions</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="case-footer">
+      <p>
+        © 2024 Cynthia Kiprop • Detailed technical documentation of portfolio
+        projects
+      </p>
+      <a href="../#contact" class="contact-link">
+        <i class="fas fa-envelope"></i>
+        Get in touch about a project
+      </a>
+    </footer>
+
+    <script>
+      // Add hover effects
+      document.querySelectorAll(".case-card").forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+          card.style.transform = "translateY(-5px)";
+        });
+        card.addEventListener("mouseleave", () => {
+          card.style.transform = "translateY(0)";
+        });
+      });
+    </script>
+  </body>
+</html>

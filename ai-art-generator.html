@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Art Generator Case Study | Cynthia Kiprop</title>
+    <link rel="stylesheet" href="../css/case-studies.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* =========================
+   Case Studies - Clean CSS
+========================= */
+
+      /* Base Styles */
+      :root {
+        --primary: #818cf8;
+        --primary-dark: #6366f1;
+        --secondary: #c4b5fd;
+        --dark: #0f172a;
+        --dark-light: #1e293b;
+        --light: #e2e8f0;
+        --light-muted: #94a3b8;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --info: #3b82f6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: var(--dark);
+        color: var(--light);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      /* Navigation */
+      .case-nav {
+        background: var(--dark-light);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.25rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+      }
+
+      .case-nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .case-nav-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 1rem;
+        }
+      }
+
+      .back-home {
+        color: var(--light-muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        transition: color 0.2s ease;
+      }
+
+      .back-home:hover {
+        color: var(--primary);
+      }
+
+      .case-nav h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--light);
+        margin: 0;
+      }
+
+      .nav-stats {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .stat {
+        color: var(--light-muted);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+
+      .stat i {
+        font-size: 1rem;
+      }
+
+      /* Main Container */
+      .case-studies-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      /* Case Study Grid */
+      .case-study-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      @media (max-width: 768px) {
+        .case-study-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Case Cards */
+      .case-card {
+        background: var(--dark-light);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .case-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .case-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .case-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .case-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+      }
+
+      .case-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .case-category {
+        color: var(--primary);
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .case-duration {
+        color: var(--light-muted);
+        font-size: 0.8rem;
+      }
+
+      .case-title {
+        color: var(--light);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem 0;
+        line-height: 1.3;
+      }
+
+      .case-desc {
+        color: var(--light-muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+      }
+
+      .case-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .tech-tag {
+        background: rgba(129, 140, 248, 0.1);
+        color: var(--primary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        border: 1px solid rgba(129, 140, 248, 0.2);
+      }
+
+      .case-stats {
+        display: flex;
+        gap: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--light-muted);
+        font-size: 0.85rem;
+      }
+
+      .stat-item i {
+        color: var(--primary);
+      }
+
+      /* Intro Section */
+      .case-studies-intro {
+        background: var(--dark-light);
+        border-radius: 1rem;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 3rem;
+      }
+
+      .case-studies-intro h2 {
+        color: var(--light);
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .case-studies-intro > p {
+        color: var(--light-muted);
+        font-size: 1.05rem;
+        max-width: 800px;
+        margin-bottom: 2.5rem;
+      }
+
+      .intro-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .feature {
+        text-align: center;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .feature:hover {
+        border-color: rgba(129, 140, 248, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .feature i {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .feature h4 {
+        color: var(--light);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .feature p {
+        color: var(--light-muted);
+        font-size: 0.9rem;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* Footer */
+      .case-footer {
+        text-align: center;
+        padding: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 4rem;
+        color: var(--light-muted);
+        font-size: 0.9rem;
+      }
+
+      .contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--primary);
+        text-decoration: none;
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(129, 140, 248, 0.1);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .contact-link:hover {
+        background: rgba(129, 140, 248, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /* Individual Case Study Styles */
+      .case-detail {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .case-detail {
+          padding: 1.5rem;
+        }
+      }
+
+      .back-to-cases {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--primary);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(129, 140, 248, 0.1);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .back-to-cases:hover {
+        background: rgba(129, 140, 248, 0.2);
+        transform: translateX(-4px);
+      }
+
+      /* Hero Section */
+      .case-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .case-hero h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+
+      @media (max-width: 768px) {
+        .case-hero h1 {
+          font-size: 2rem;
+        }
+      }
+
+      .case-desc {
+        color: var(--light-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+      }
+
+      .case-meta-info {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .meta-item {
+        text-align: center;
+        padding: 1rem;
+        background: var(--dark-light);
+        border-radius: 0.75rem;
+        min-width: 120px;
+      }
+
+      .meta-value {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .meta-label {
+        font-size: 0.875rem;
+        color: var(--light-muted);
+      }
+
+      /* Section Styles */
+      .section {
+        margin-bottom: 3rem;
+      }
+
+      .section-title {
+        color: var(--light);
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(129, 140, 248, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-title i {
+        color: var(--primary);
+      }
+
+      /* Challenge/Solution Grid */
+      .challenge-solution {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+
+      @media (max-width: 768px) {
+        .challenge-solution {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .challenge,
+      .solution {
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        line-height: 1.6;
+      }
+
+      .challenge {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+
+      .challenge h3,
+      .solution h3 {
+        color: var(--light);
+        margin: 0 0 0.75rem 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .solution {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+
+      /* Tech Stack */
+      .tech-stack-detail {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .tech-item {
+        background: var(--dark-light);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tech-item:hover {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+      }
+
+      .tech-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary);
+      }
+
+      .tech-item h4 {
+        color: var(--light);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .tech-item p {
+        color: var(--light-muted);
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* Code Snippets */
+      .code-snippet {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        overflow-x: auto;
+        font-family: "Monaco", "Menlo", "Consolas", monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+
+      .code-comment {
+        color: var(--light-muted);
+      }
+
+      .code-keyword {
+        color: var(--primary);
+      }
+
+      .code-string {
+        color: var(--success);
+      }
+
+      .code-function {
+        color: var(--warning);
+      }
+
+      .code-number {
+        color: var(--danger);
+      }
+
+      /* Feature Grids */
+      .feature-grid,
+      .visualization-modes,
+      .audio-features,
+      .ai-features,
+      .art-styles {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .feature-card,
+      .mode-card,
+      .style-card {
+        background: var(--dark-light);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover,
+      .mode-card:hover,
+      .style-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+      }
+
+      .feature-icon,
+      .mode-icon,
+      .style-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+
+      .feature-card h4,
+      .mode-card h4,
+      .style-card h4 {
+        color: var(--light);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .feature-card p,
+      .mode-card p,
+      .style-card p {
+        color: var(--light-muted);
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* Performance Metrics */
+      .performance-metrics,
+      .generation-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .metric-card,
+      .stat-card {
+        background: var(--dark-light);
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .metric-value,
+      .stat-value {
+        display: block;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .metric-label,
+      .stat-label {
+        color: var(--light-muted);
+        font-size: 0.875rem;
+      }
+
+      /* Lists */
+      ul {
+        color: var(--light-muted);
+        line-height: 1.8;
+        padding-left: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      ul strong {
+        color: var(--light);
+        font-weight: 600;
+      }
+
+      /* Buttons */
+      .live-demo-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 0.75rem 1.75rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .live-demo-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+      }
+
+      .github-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--light);
+        padding: 0.75rem 1.75rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .github-link:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .live-demo-btn,
+        .github-link {
+          width: 100%;
+          margin: 0.5rem 0;
+          justify-content: center;
+        }
+      }
+
+      /* Utility Classes */
+      .text-center {
+        text-align: center;
+      }
+
+      .mt-1 {
+        margin-top: 0.5rem;
+      }
+      .mt-2 {
+        margin-top: 1rem;
+      }
+      .mt-3 {
+        margin-top: 1.5rem;
+      }
+      .mt-4 {
+        margin-top: 2rem;
+      }
+
+      .mb-1 {
+        margin-bottom: 0.5rem;
+      }
+      .mb-2 {
+        margin-bottom: 1rem;
+      }
+      .mb-3 {
+        margin-bottom: 1.5rem;
+      }
+      .mb-4 {
+        margin-bottom: 2rem;
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+
+      .justify-center {
+        justify-content: center;
+      }
+
+      .gap-1 {
+        gap: 0.5rem;
+      }
+      .gap-2 {
+        gap: 1rem;
+      }
+      .gap-3 {
+        gap: 1.5rem;
+      }
+      .gap-4 {
+        gap: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="case-nav">
+      <a href="index.htm" class="back-home">
+        <i class="fas fa-arrow-left"></i>
+        All Case Studies
+      </a>
+      <h1>AI Art Generator</h1>
+      <div class="nav-stats">
+        <span class="stat">
+          <i class="fas fa-clock"></i>
+          3 Weeks
+        </span>
+        <span class="stat">
+          <i class="fas fa-brain"></i>
+          AI/ML
+        </span>
+      </div>
+    </nav>
+
+    <main class="case-detail">
+      <a href="index.htm" class="back-to-cases">
+        <i class="fas fa-arrow-left"></i>
+        Back to All Cases
+      </a>
+
+      <div class="case-hero">
+        <h1>AI Art Generator</h1>
+        <p class="case-desc">
+          A neural network-powered art creation tool that generates unique
+          abstract art using machine learning algorithms in the browser.
+        </p>
+
+        <!-- AI Art Generator Preview -->
+        <div class="ai-art-preview">
+          <div class="art-canvas" id="artCanvas"></div>
+
+          <!-- Neural Network Visualization -->
+          <div class="neural-network" id="neuralNetwork"></div>
+
+          <div class="ai-controls">
+            <div class="style-selector">
+              <button class="style-btn active" data-style="abstract">
+                <i class="fas fa-paint-brush"></i>
+                Abstract
+              </button>
+              <button class="style-btn" data-style="neural">
+                <i class="fas fa-brain"></i>
+                Neural
+              </button>
+              <button class="style-btn" data-style="organic">
+                <i class="fas fa-leaf"></i>
+                Organic
+              </button>
+              <button class="style-btn" data-style="geometric">
+                <i class="fas fa-shapes"></i>
+                Geometric
+              </button>
+            </div>
+
+            <button class="generate-btn" id="generateArt">
+              <i class="fas fa-magic"></i>
+              Generate Art
+            </button>
+          </div>
+        </div>
+
+        <div class="case-meta-info">
+          <div class="meta-item">
+            <span class="meta-value">4</span>
+            <span class="meta-label">Art Styles</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-value">5</span>
+            <span class="meta-label">Neural Layers</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-value">Real-time</span>
+            <span class="meta-label">Generation</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-value">100%</span>
+            <span class="meta-label">Browser-based</span>
+          </div>
+        </div>
+
+        <div>
+          <!-- In your case study page -->
+          <a href="#" class="live-demo-btn" onclick="launchAIDemo(event)">
+            <i class="fas fa-play-circle"></i>
+            <span class="btn-text">Generate Art Live</span>
+            <span class="btn-loading" style="display: none">
+              <i class="fas fa-spinner fa-spin"></i> Launching Demo...
+            </span>
+          </a>
+
+          <script>
+            function launchAIDemo(event) {
+              event.preventDefault();
+
+              const btn = event.currentTarget;
+              const btnText = btn.querySelector(".btn-text");
+              const btnLoading = btn.querySelector(".btn-loading");
+
+              // Show loading state
+              btnText.style.display = "none";
+              btnLoading.style.display = "inline-flex";
+
+              // Set flag to indicate coming from case study
+              localStorage.setItem("autoStartAIDemo", "true");
+
+              // Navigate to demo
+              setTimeout(() => {
+                window.location.href = "../index.html#ai-art-demo";
+              }, 500);
+            }
+
+            // Add to your main page to auto-start
+            document.addEventListener("DOMContentLoaded", function () {
+              if (localStorage.getItem("autoStartAIDemo") === "true") {
+                localStorage.removeItem("autoStartAIDemo");
+
+                // Wait for page to load
+                setTimeout(() => {
+                  const aiDemo = document.getElementById("ai-art-demo");
+                  if (aiDemo) {
+                    // Scroll to demo
+                    aiDemo.scrollIntoView({ behavior: "smooth" });
+
+                    // Add highlight
+                    aiDemo.style.transition = "all 0.3s ease";
+                    aiDemo.style.border = "3px solid #818cf8";
+                    aiDemo.style.boxShadow =
+                      "0 0 30px rgba(129, 140, 248, 0.5)";
+
+                    // Auto-click generate button after 1 second
+                    setTimeout(() => {
+                      const generateBtn = document.getElementById("aiGenerate");
+                      if (generateBtn) {
+                        generateBtn.click();
+
+                        // Show success message
+                        const successMsg = document.createElement("div");
+                        successMsg.innerHTML = `
+                            <div style="position: fixed; top: 20px; right: 20px; 
+                                      background: rgba(16, 185, 129, 0.95); color: white; 
+                                      padding: 15px; border-radius: 10px; z-index: 10000;">
+                                🎨 AI Art Generator Started!
+                            </div>
+                        `;
+                        document.body.appendChild(successMsg);
+                        setTimeout(() => successMsg.remove(), 3000);
+                      }
+                    }, 1000);
+
+                    // Remove highlight after 3 seconds
+                    setTimeout(() => {
+                      aiDemo.style.border = "";
+                      aiDemo.style.boxShadow = "";
+                    }, 3000);
+                  }
+                }, 1000);
+              }
+            });
+          </script>
+          <a
+            href="https://github.com/Cynthia-0034"
+            class="github-link"
+            target="_blank"
+          >
+            <i class="fab fa-github"></i>
+            View Source Code
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-brain"></i>
+          Project Overview
+        </h2>
+        <p>
+          The AI Art Generator is a browser-based application that uses neural
+          networks to create unique abstract art. Unlike traditional AI art
+          generators that rely on server-side processing, this tool runs
+          entirely in the browser using TensorFlow.js, making art generation
+          fast, private, and accessible.
+        </p>
+
+        <div class="challenge-solution">
+          <div class="challenge">
+            <h3><i class="fas fa-exclamation-triangle"></i> Challenge</h3>
+            <p>
+              Running complex neural network inference in the browser while
+              maintaining real-time generation speeds and artistic quality.
+            </p>
+          </div>
+          <div class="solution">
+            <h3><i class="fas fa-lightbulb"></i> Solution</h3>
+            <p>
+              Implemented lightweight neural network architectures optimized for
+              browser execution and WebGL acceleration through TensorFlow.js.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-cogs"></i>
+          Technical Implementation
+        </h2>
+
+        <div class="tech-stack-detail">
+          <div class="tech-item">
+            <div class="tech-icon">🤖</div>
+            <h4>TensorFlow.js</h4>
+            <p>Browser-based machine learning with GPU acceleration</p>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">🎨</div>
+            <h4>Canvas API</h4>
+            <p>Real-time art rendering and manipulation</p>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">⚡</div>
+            <h4>Web Workers</h4>
+            <p>Background neural network processing</p>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">🔄</div>
+            <h4>WebGL</h4>
+            <p>GPU-accelerated neural network operations</p>
+          </div>
+        </div>
+
+        <h3 style="color: #f8fafc; margin-top: 30px">
+          Neural Network Architecture
+        </h3>
+        <div class="code-snippet">
+          <pre><span class="code-comment">// Neural network model for art generation</span>
+<span class="code-keyword">const</span> createArtGeneratorModel = () => {
+    <span class="code-keyword">const</span> model = tf.sequential();
+    
+    <span class="code-comment">// Input layer - takes random noise as input</span>
+    model.<span class="code-function">add</span>(tf.layers.dense({
+        units: <span class="code-number">256</span>,
+        inputShape: [<span class="code-number">100</span>],
+        activation: <span class="code-string">'relu'</span>
+    }));
+    
+    <span class="code-comment">// Hidden layers - process artistic patterns</span>
+    model.<span class="code-function">add</span>(tf.layers.dense({
+        units: <span class="code-number">512</span>,
+        activation: <span class="code-string">'relu'</span>
+    }));
+    
+    model.<span class="code-function">add</span>(tf.layers.dense({
+        units: <span class="code-number">1024</span>,
+        activation: <span class="code-string">'relu'</span>
+    }));
+    
+    <span class="code-comment">// Output layer - generates RGB pixel values</span>
+    model.<span class="code-function">add</span>(tf.layers.dense({
+        units: <span class="code-number">3072</span>, <span class="code-comment">// 32x32x3 pixels</span>
+        activation: <span class="code-string">'sigmoid'</span>
+    }));
+    
+    model.<span class="code-function">add</span>(tf.layers.reshape({
+        targetShape: [<span class="code-number">32</span>, <span class="code-number">32</span>, <span class="code-number">3</span>]
+    }));
+    
+    <span class="code-comment">// Compile model for training</span>
+    model.<span class="code-function">compile</span>({
+        optimizer: tf.train.adam(<span class="code-number">0.001</span>),
+        loss: <span class="code-string">'meanSquaredError'</span>
+    });
+    
+    <span class="code-keyword">return</span> model;
+};
+
+<span class="code-comment">// Generate new art</span>
+<span class="code-keyword">async</span> <span class="code-function">generateArt</span>(style = <span class="code-string">'abstract'</span>) {
+    <span class="code-comment">// Create random noise input</span>
+    <span class="code-keyword">const</span> noise = tf.randomNormal([<span class="code-number">1</span>, <span class="code-number">100</span>]);
+    
+    <span class="code-comment">// Generate art through neural network</span>
+    <span class="code-keyword">const</span> generated = <span class="code-keyword">this</span>.model.<span class="code-function">predict</span>(noise);
+    
+    <span class="code-comment">// Apply style-specific transformations</span>
+    <span class="code-keyword">const</span> styledArt = <span class="code-keyword">await</span> <span class="code-keyword">this</span>.<span class="code-function">applyStyle</span>(generated, style);
+    
+    <span class="code-comment">// Render to canvas</span>
+    <span class="code-keyword">await</span> tf.browser.<span class="code-function">toPixels</span>(styledArt, <span class="code-keyword">this</span>.canvas);
+    
+    <span class="code-comment">// Clean up tensors</span>
+    noise.<span class="code-function">dispose</span>();
+    generated.<span class="code-function">dispose</span>();
+    styledArt.<span class="code-function">dispose</span>();
+}</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-palette"></i>
+          Art Styles & Techniques
+        </h2>
+
+        <div class="art-styles">
+          <div class="style-card">
+            <div class="style-pattern abstract-pattern"></div>
+            <div class="style-icon">🎨</div>
+            <h4>Abstract Expressionism</h4>
+            <p>
+              Generates non-representational art with emphasis on color, form,
+              and texture rather than recognizable imagery.
+            </p>
+          </div>
+
+          <div class="style-card">
+            <div class="style-pattern neural-pattern"></div>
+            <div class="style-icon">🧠</div>
+            <h4>Neural Patterns</h4>
+            <p>
+              Visualizes the internal workings of neural networks through
+              patterns that mimic biological neural connections.
+            </p>
+          </div>
+
+          <div class="style-card">
+            <div class="style-pattern organic-pattern"></div>
+            <div class="style-icon">🌿</div>
+            <h4>Organic Forms</h4>
+            <p>
+              Creates art inspired by natural patterns, biological structures,
+              and organic growth processes.
+            </p>
+          </div>
+
+          <div class="style-card">
+            <div class="style-pattern geometric-pattern"></div>
+            <div class="style-icon">🔷</div>
+            <h4>Geometric Abstraction</h4>
+            <p>
+              Generates precise geometric patterns, symmetry, and mathematical
+              structures in vibrant colors.
+            </p>
+          </div>
+        </div>
+
+        <!-- Art Gallery Preview -->
+        <div class="art-gallery">
+          <div class="art-sample"></div>
+          <div class="art-sample"></div>
+          <div class="art-sample"></div>
+          <div class="art-sample"></div>
+          <div class="art-sample"></div>
+          <div class="art-sample"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-star"></i>
+          Key Features
+        </h2>
+
+        <div class="ai-features">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h4>Real-time Generation</h4>
+            <p>
+              Generate new art pieces in under 2 seconds using GPU-accelerated
+              neural networks.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🎛️</div>
+            <h4>Style Controls</h4>
+            <p>
+              Adjustable parameters for color palette, complexity, texture, and
+              artistic style.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">💾</div>
+            <h4>Export Options</h4>
+            <p>
+              Save generated art as high-resolution PNG files or share directly
+              to social media.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h4>Animation Mode</h4>
+            <p>
+              Create animated art sequences by interpolating between different
+              generated pieces.
+            </p>
+          </div>
+        </div>
+
+        <div class="generation-stats">
+          <div class="stat-card">
+            <span class="stat-value">&lt;2s</span>
+            <span class="stat-label">Generation Time</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">99.9%</span>
+            <span class="stat-label">Unique Output</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">4K</span>
+            <span class="stat-label">Max Resolution</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Client-side</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-tachometer-alt"></i>
+          Performance & Optimization
+        </h2>
+
+        <div class="challenge-solution">
+          <div class="challenge">
+            <h3><i class="fas fa-memory"></i> Memory Constraints</h3>
+            <p>
+              Neural networks require significant memory, which is limited in
+              browser environments.
+            </p>
+          </div>
+          <div class="solution">
+            <h3><i class="fas fa-bolt"></i> WebGL Acceleration</h3>
+            <p>
+              Leveraged TensorFlow.js WebGL backend for GPU-accelerated neural
+              network operations.
+            </p>
+          </div>
+        </div>
+
+        <ul style="color: #cbd5e1; line-height: 1.8; margin-top: 20px">
+          <li>
+            <strong>Model Quantization:</strong> Reduced model size by 75% with
+            minimal quality loss
+          </li>
+          <li>
+            <strong>Progressive Generation:</strong> Low-res preview followed by
+            high-res refinement
+          </li>
+          <li>
+            <strong>Tensor Reuse:</strong> Efficient memory management to
+            prevent garbage collection
+          </li>
+          <li>
+            <strong>Web Worker Offloading:</strong> Background processing for
+            complex operations
+          </li>
+          <li>
+            <strong>Cache Optimization:</strong> Reused computed values for
+            similar generations
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-chart-line"></i>
+          Technical Results
+        </h2>
+
+        <div class="challenge-solution">
+          <div class="challenge">
+            <h3><i class="fas fa-paint-brush"></i> Artistic Quality</h3>
+            <p>
+              Achieved professional-grade abstract art generation comparable to
+              server-based solutions.
+            </p>
+          </div>
+          <div class="solution">
+            <h3><i class="fas fa-rocket"></i> Performance</h3>
+            <p>
+              Maintained 60 FPS during art generation and animation with under
+              200MB memory usage.
+            </p>
+          </div>
+        </div>
+
+        <p>
+          The AI Art Generator demonstrates that sophisticated machine learning
+          applications can run entirely in the browser while providing
+          professional results and excellent user experience.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-graduation-cap"></i>
+          Lessons Learned
+        </h2>
+        <p>
+          This project provided valuable insights into browser-based machine
+          learning and creative AI applications:
+        </p>
+        <ul style="color: #cbd5e1; line-height: 1.8">
+          <li>
+            TensorFlow.js enables powerful ML in browsers but requires careful
+            memory management
+          </li>
+          <li>
+            Artistic quality in AI generation depends heavily on training data
+            and model architecture
+          </li>
+          <li>
+            Real-time generation requires balancing model complexity with
+            performance
+          </li>
+          <li>
+            Browser limitations require innovative approaches to model
+            optimization
+          </li>
+          <li>
+            User interaction with AI art generation enhances creativity rather
+            than replacing it
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <footer class="case-footer">
+      <p>© 2024 Cynthia Kiprop • AI Art Generator Case Study</p>
+      <div
+        style="
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          margin-top: 15px;
+          flex-wrap: wrap;
+        "
+      >
+        <a href="../lab/index.html#ai-art" class="contact-link">
+          <i class="fas fa-play-circle"></i>
+          Generate Art Live
+        </a>
+        <a href="index.htm" class="contact-link">
+          <i class="fas fa-list"></i>
+          View All Cases
+        </a>
+        <a href="../#contact" class="contact-link">
+          <i class="fas fa-envelope"></i>
+          Contact for Details
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      // Create animated art cells
+      const artCanvas = document.getElementById("artCanvas");
+      const neuralNetwork = document.getElementById("neuralNetwork");
+
+      // Create art cells
+      for (let i = 0; i < 12; i++) {
+        const cell = document.createElement("div");
+        cell.className = "art-cell";
+        cell.style.setProperty("--i", i);
+
+        const pattern = document.createElement("div");
+        pattern.className = "art-pattern";
+        cell.appendChild(pattern);
+
+        artCanvas.appendChild(cell);
+      }
+
+      // Create neural network visualization
+      const layers = 3;
+      const neuronsPerLayer = [3, 4, 3];
+
+      for (let i = 0; i < layers; i++) {
+        const layer = document.createElement("div");
+        layer.className = "neural-layer";
+
+        for (let j = 0; j < neuronsPerLayer[i]; j++) {
+          const neuron = document.createElement("div");
+          neuron.className = "neuron";
+          neuron.style.setProperty("--i", i);
+          neuron.style.setProperty("--j", j);
+          layer.appendChild(neuron);
+        }
+
+        neuralNetwork.appendChild(layer);
+      }
+
+      // Create connections between neurons
+      for (let i = 0; i < layers - 1; i++) {
+        const currentLayer = neuralNetwork.children[i];
+        const nextLayer = neuralNetwork.children[i + 1];
+
+        for (let j = 0; j < currentLayer.children.length; j++) {
+          for (let k = 0; k < nextLayer.children.length; k++) {
+            const connection = document.createElement("div");
+            connection.className = "connection";
+
+            const neuron1 = currentLayer.children[j];
+            const neuron2 = nextLayer.children[k];
+
+            const rect1 = neuron1.getBoundingClientRect();
+            const rect2 = neuron2.getBoundingClientRect();
+
+            const x1 = rect1.left + rect1.width / 2;
+            const y1 = rect1.top + rect1.height / 2;
+            const x2 = rect2.left + rect2.width / 2;
+            const y2 = rect2.top + rect2.height / 2;
+
+            const length = Math.sqrt(
+              Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)
+            );
+            const angle = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+
+            connection.style.width = `${length}px`;
+            connection.style.left = `${
+              x1 - neuralNetwork.getBoundingClientRect().left
+            }px`;
+            connection.style.top = `${
+              y1 - neuralNetwork.getBoundingClientRect().top
+            }px`;
+            connection.style.transform = `rotate(${angle}deg)`;
+
+            neuralNetwork.appendChild(connection);
+          }
+        }
+      }
+
+      // Interactive style buttons
+      const styleButtons = document.querySelectorAll(".style-btn");
+      styleButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          styleButtons.forEach((btn) => btn.classList.remove("active"));
+          this.classList.add("active");
+
+          const style = this.dataset.style;
+          const cells = artCanvas.querySelectorAll(".art-cell");
+
+          // Change animation based on style
+          cells.forEach((cell, i) => {
+            cell.style.animationDuration = `${2 + Math.random()}s`;
+
+            if (style === "abstract") {
+              cell.style.background = `rgba(${Math.random() * 100 + 155}, 
+                                                    ${
+                                                      Math.random() * 100 + 155
+                                                    }, 
+                                                    ${
+                                                      Math.random() * 100 + 155
+                                                    }, 0.3)`;
+            } else if (style === "neural") {
+              cell.style.background = `linear-gradient(45deg, 
+                                            rgba(16, 185, 129, ${
+                                              0.2 + Math.random() * 0.3
+                                            }), 
+                                            rgba(139, 92, 246, ${
+                                              0.2 + Math.random() * 0.3
+                                            }))`;
+            } else if (style === "organic") {
+              cell.style.background = `radial-gradient(circle at ${
+                Math.random() * 100
+              }% ${Math.random() * 100}%, 
+                                            rgba(52, 211, 153, 0.4), transparent 70%)`;
+            } else if (style === "geometric") {
+              cell.style.background = `repeating-linear-gradient(${
+                Math.random() * 360
+              }deg, 
+                                            transparent, transparent 5px, 
+                                            rgba(16, 185, 129, 0.3) 5px, 
+                                            rgba(16, 185, 129, 0.3) 10px)`;
+            }
+          });
+        });
+      });
+
+      // Generate art button
+      document
+        .getElementById("generateArt")
+        .addEventListener("click", function () {
+          this.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Generating...';
+          this.disabled = true;
+
+          const cells = artCanvas.querySelectorAll(".art-cell");
+
+          // Animate generation
+          cells.forEach((cell, i) => {
+            setTimeout(() => {
+              cell.style.transform = "scale(1.2)";
+              cell.style.filter = "brightness(1.5)";
+
+              setTimeout(() => {
+                cell.style.transform = "";
+                cell.style.filter = "";
+              }, 300);
+            }, i * 100);
+          });
+
+          // Reset button
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-magic"></i> Generate Art';
+            this.disabled = false;
+          }, 1500);
+        });
+
+      // Animate art samples on hover
+      document.querySelectorAll(".art-sample").forEach((sample) => {
+        sample.addEventListener("mouseenter", () => {
+          sample.style.transform = "rotate(5deg) scale(1.1)";
+        });
+
+        sample.addEventListener("mouseleave", () => {
+          sample.style.transform = "";
+        });
+      });
+    </script>
+  </body>
+</html>

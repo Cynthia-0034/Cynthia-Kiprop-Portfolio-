@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Music Visualizer Case Study | Cynthia Kiprop</title>
+    <link rel="stylesheet" href="../css/case-studies.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* =========================
+   Interactive Music Case Study - Clean CSS
+========================= */
+
+      /* Project-specific Variables */
+      :root {
+        --music-primary: #8b5cf6;
+        --music-primary-dark: #7c3aed;
+        --music-secondary: #c4b5fd;
+        --music-accent: #ec4899;
+        --music-success: #10b981;
+        --music-warning: #f59e0b;
+        --music-info: #3b82f6;
+        --music-dark: #0f172a;
+        --music-dark-light: #1e293b;
+        --music-light: #f8fafc;
+        --music-light-muted: #cbd5e1;
+      }
+
+      /* Base Styles */
+      body {
+        background: var(--music-dark);
+        color: var(--music-light);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      /* Navigation */
+      .case-nav {
+        background: rgba(30, 41, 59, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .case-nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .case-nav-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 1rem;
+        }
+      }
+
+      .back-home {
+        color: #94a3b8;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        transition: color 0.2s ease;
+      }
+
+      .back-home:hover {
+        color: var(--music-primary);
+      }
+
+      .case-nav h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--music-light);
+        margin: 0;
+      }
+
+      .nav-stats {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .stat {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
+
+      /* Main Content */
+      .case-detail {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .case-detail {
+          padding: 1.5rem;
+        }
+      }
+
+      /* Hero Section */
+      .case-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .case-hero h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--music-primary),
+          var(--music-accent)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+
+      @media (max-width: 768px) {
+        .case-hero h1 {
+          font-size: 2rem;
+        }
+      }
+
+      .case-desc {
+        color: var(--music-light-muted);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+      }
+
+      /* Music Visualizer Preview */
+      .music-visualizer-preview {
+        width: 100%;
+        max-width: 800px;
+        height: 400px;
+        margin: 30px auto;
+        background: linear-gradient(135deg, #1e1b4b, #3730a3);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 2px solid rgba(139, 92, 246, 0.3);
+        position: relative;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .waveform-preview {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 60%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+      .visualizer-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .frequency-bar {
+        width: 4px;
+        background: linear-gradient(to top, #8b5cf6, #ec4899);
+        border-radius: 2px 2px 0 0;
+        animation: frequencyPulse 1.5s ease-in-out infinite;
+        animation-delay: calc(var(--i) * 0.05s);
+      }
+      @keyframes frequencyPulse {
+        0%,
+        100% {
+          height: 20%;
+        }
+        50% {
+          height: 80%;
+        }
+      }
+
+      .particle-preview {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: var(--music-secondary);
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: particleFloat 3s linear infinite;
+      }
+
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-200px) translateX(100px);
+          opacity: 0;
+        }
+      }
+
+      /* Visualizer Controls */
+      .visualizer-controls {
+        position: absolute;
+        bottom: 1.25rem;
+        left: 1.25rem;
+        right: 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      @media (max-width: 768px) {
+        .visualizer-controls {
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+      }
+
+      .control-group {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .control-group {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+      }
+
+      .control-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+      }
+
+      .control-btn:hover {
+        background: rgba(139, 92, 246, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .control-btn.active {
+        background: rgba(139, 92, 246, 0.5);
+        border-color: var(--music-primary);
+      }
+
+      /* Meta Information */
+      .case-meta-info {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .meta-item {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(30, 41, 59, 0.6);
+        border-radius: 0.75rem;
+        min-width: 120px;
+      }
+
+      .meta-value {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--music-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .meta-label {
+        font-size: 0.875rem;
+        color: #94a3b8;
+      }
+
+      /* Buttons */
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+      }
+
+      .live-demo-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--music-primary),
+          var(--music-primary-dark)
+        );
+        color: white;
+        padding: 0.75rem 1.75rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .live-demo-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(139, 92, 246, 0.3);
+      }
+
+      .github-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--music-light);
+        padding: 0.75rem 1.75rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .github-link:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      /* Section Styles */
+      .section {
+        margin-bottom: 3rem;
+      }
+
+      .section-title {
+        color: var(--music-light);
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .section-title i {
+        color: var(--music-primary);
+      }
+
+      /* Challenge/Solution */
+      .challenge-solution {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+
+      @media (max-width: 768px) {
+        .challenge-solution {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .challenge,
+      .solution {
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        line-height: 1.6;
+      }
+
+      .challenge {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+      }
+
+      .solution {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+
+      .challenge h3,
+      .solution h3 {
+        color: var(--music-light);
+        margin: 0 0 0.75rem 0;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Tech Stack */
+      .tech-stack-detail {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .tech-item {
+        background: rgba(30, 41, 59, 0.6);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tech-item:hover {
+        border-color: var(--music-primary);
+        transform: translateY(-4px);
+      }
+
+      .tech-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--music-primary);
+      }
+
+      .tech-item h4 {
+        color: var(--music-light);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .tech-item p {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* Code Snippet */
+      .code-snippet {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        overflow-x: auto;
+        font-family: "Monaco", "Menlo", "Consolas", monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+
+      .code-comment {
+        color: #94a3b8;
+      }
+      .code-keyword {
+        color: #60a5fa;
+      }
+      .code-string {
+        color: #10b981;
+      }
+      .code-function {
+        color: #f59e0b;
+      }
+      .code-number {
+        color: #ec4899;
+      }
+
+      /* Visualization Modes */
+      .visualization-modes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .mode-card {
+        background: rgba(30, 41, 59, 0.6);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .mode-card:hover {
+        border-color: var(--music-primary);
+        transform: translateY(-4px);
+      }
+
+      .mode-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--music-primary);
+      }
+
+      .mode-card h4 {
+        color: var(--music-light);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .mode-card p {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* Frequency Spectrum */
+      .frequency-spectrum {
+        width: 100%;
+        height: 200px;
+        margin: 1.5rem 0;
+        background: rgba(15, 23, 42, 0.5);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .spectrum-bars {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 100%;
+        padding: 1.25rem;
+      }
+
+      .spectrum-bar {
+        width: 8px;
+        background: linear-gradient(
+          to top,
+          var(--music-primary),
+          var(--music-accent)
+        );
+        border-radius: 4px 4px 0 0;
+        transition: height 0.1s ease;
+      }
+
+      .audio-wave {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(139, 92, 246, 0.5);
+        transform: translateY(-50%);
+      }
+
+      /* Audio Features */
+      .audio-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .feature-card {
+        background: rgba(30, 41, 59, 0.6);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+      }
+
+      .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--music-primary);
+      }
+
+      .feature-card h4 {
+        color: var(--music-light);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .feature-card p {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      /* Performance Metrics */
+      .performance-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .metric-card {
+        background: rgba(30, 41, 59, 0.6);
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .metric-value {
+        display: block;
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--music-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .metric-label {
+        color: #94a3b8;
+        font-size: 0.875rem;
+      }
+
+      /* Lists */
+      ul {
+        color: #cbd5e1;
+        line-height: 1.8;
+        padding-left: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      ul strong {
+        color: var(--music-light);
+        font-weight: 600;
+      }
+
+      /* Back to Cases */
+      .back-to-cases {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--music-primary);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        padding: 0.75rem 1.5rem;
+        background: rgba(139, 92, 246, 0.1);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .back-to-cases:hover {
+        background: rgba(139, 92, 246, 0.2);
+        transform: translateX(-4px);
+      }
+
+      /* Footer */
+      .case-footer {
+        text-align: center;
+        padding: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 4rem;
+        color: #94a3b8;
+        font-size: 0.9rem;
+      }
+
+      .case-footer .contact-links {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .case-footer .contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--music-primary);
+        text-decoration: none;
+        padding: 0.75rem 1.5rem;
+        background: rgba(139, 92, 246, 0.1);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .case-footer .contact-link:hover {
+        background: rgba(139, 92, 246, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /* Utility Classes */
+      .text-center {
+        text-align: center;
+      }
+      .mt-2 {
+        margin-top: 1rem;
+      }
+      .mt-3 {
+        margin-top: 1.5rem;
+      }
+      .mt-4 {
+        margin-top: 2rem;
+      }
+      .mb-2 {
+        margin-bottom: 1rem;
+      }
+      .mb-3 {
+        margin-bottom: 1.5rem;
+      }
+      .mb-4 {
+        margin-bottom: 2rem;
+      }
+
+      .flex {
+        display: flex;
+      }
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      .justify-center {
+        justify-content: center;
+      }
+      .gap-2 {
+        gap: 1rem;
+      }
+      .gap-3 {
+        gap: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="case-nav">
+      <a href="index.htm" class="back-home">
+        <i class="fas fa-arrow-left"></i>
+        All Case Studies
+      </a>
+      <h1>Interactive Music Visualizer</h1>
+      <div class="nav-stats">
+        <span class="stat">
+          <i class="fas fa-clock"></i>
+          2 Weeks
+        </span>
+        <span class="stat">
+          <i class="fas fa-music"></i>
+          Audio Processing
+        </span>
+      </div>
+    </nav>
+
+    <main class="case-detail">
+      <a href="index.htm" class="back-to-cases">
+        <i class="fas fa-arrow-left"></i>
+        Back to All Cases
+      </a>
+
+      <div class="case-hero">
+        <h1>Interactive Music Visualizer</h1>
+        <p class="case-desc">
+          A real-time audio visualization tool that transforms sound into
+          stunning visual experiences using Web Audio API and Canvas.
+        </p>
+
+        <!-- Music Visualizer Preview -->
+        <div class="music-visualizer-preview">
+          <div class="waveform-preview" id="waveformPreview"></div>
+
+          <!-- Floating particles -->
+          <div
+            class="particle-preview"
+            style="top: 30%; left: 20%; animation-delay: 0s"
+          ></div>
+          <div
+            class="particle-preview"
+            style="top: 60%; left: 40%; animation-delay: 0.5s"
+          ></div>
+          <div
+            class="particle-preview"
+            style="top: 40%; left: 60%; animation-delay: 1s"
+          ></div>
+          <div
+            class="particle-preview"
+            style="top: 70%; left: 80%; animation-delay: 1.5s"
+          ></div>
+
+          <div class="visualizer-controls">
+            <div class="control-group">
+              <button class="control-btn active" data-mode="waveform">
+                <i class="fas fa-wave-square"></i>
+                Waveform
+              </button>
+              <button class="control-btn" data-mode="particles">
+                <i class="fas fa-star"></i>
+                Particles
+              </button>
+              <button class="control-btn" data-mode="spectrum">
+                <i class="fas fa-chart-bar"></i>
+                Spectrum
+              </button>
+            </div>
+
+            <div class="control-group">
+              <button class="control-btn">
+                <i class="fas fa-microphone"></i>
+                Microphone
+              </button>
+              <button class="control-btn">
+                <i class="fas fa-file-audio"></i>
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="case-meta-info">
+          <div class="meta-item">
+            <span class="meta-value">4</span>
+            <span class="meta-label">Visual Modes</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-value">60 FPS</span>
+            <span class="meta-label">Performance</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-value">2048</span>
+            <span class="meta-label">FFT Size</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-value">Real-time</span>
+            <span class="meta-label">Processing</span>
+          </div>
+        </div>
+
+        <div>
+          <a href="../lab/index.html#music" class="live-demo-btn">
+            <i class="fas fa-play-circle"></i>
+            Try Live Demo
+          </a>
+          <a
+            href="https://github.com/Cynthia-0034"
+            class="github-link"
+            target="_blank"
+          >
+            <i class="fab fa-github"></i>
+            View Source Code
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-wave-square"></i>
+          Project Overview
+        </h2>
+        <p>
+          The Interactive Music Visualizer is a browser-based application that
+          analyzes audio input in real-time and creates dynamic visual
+          representations of sound. Built with the Web Audio API and Canvas 2D,
+          it transforms audio signals into beautiful, responsive visualizations.
+        </p>
+
+        <div class="challenge-solution">
+          <div class="challenge">
+            <h3><i class="fas fa-exclamation-triangle"></i> Challenge</h3>
+            <p>
+              Processing audio data at 60 FPS while maintaining smooth
+              visualizations and handling various audio sources (microphone,
+              files, generated tones).
+            </p>
+          </div>
+          <div class="solution">
+            <h3><i class="fas fa-lightbulb"></i> Solution</h3>
+            <p>
+              Implemented efficient FFT analysis with Web Audio API, optimized
+              Canvas rendering, and Web Workers for background audio processing.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-cogs"></i>
+          Technical Architecture
+        </h2>
+
+        <div class="tech-stack-detail">
+          <div class="tech-item">
+            <div class="tech-icon">🎵</div>
+            <h4>Web Audio API</h4>
+            <p>Real-time audio processing and FFT analysis</p>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">🎨</div>
+            <h4>Canvas 2D</h4>
+            <p>High-performance visualization rendering</p>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">⚡</div>
+            <h4>Web Workers</h4>
+            <p>Background audio processing</p>
+          </div>
+          <div class="tech-item">
+            <div class="tech-icon">📊</div>
+            <h4>FFT Analysis</h4>
+            <p>Frequency domain transformations</p>
+          </div>
+        </div>
+
+        <h3 style="color: #f8fafc; margin-top: 30px">
+          Audio Processing Pipeline
+        </h3>
+        <div class="code-snippet">
+          <pre><span class="code-comment">// Audio analysis and visualization pipeline</span>
+<span class="code-keyword">class</span> <span class="code-function">AudioVisualizer</span> {
+    <span class="code-function">constructor</span>() {
+        <span class="code-keyword">this</span>.audioContext = <span class="code-keyword">new</span> (<span class="code-function">window</span>.AudioContext || 
+                              <span class="code-function">window</span>.webkitAudioContext)();
+        
+        <span class="code-keyword">this</span>.analyser = <span class="code-keyword">this</span>.audioContext.<span class="code-function">createAnalyser</span>();
+        <span class="code-keyword">this</span>.analyser.fftSize = <span class="code-number">2048</span>;
+        <span class="code-keyword">this</span>.bufferLength = <span class="code-keyword">this</span>.analyser.frequencyBinCount;
+        <span class="code-keyword">this</span>.dataArray = <span class="code-keyword">new</span> Uint8Array(<span class="code-keyword">this</span>.bufferLength);
+        
+        <span class="code-keyword">this</span>.isRunning = <span class="code-keyword">false</span>;
+    }
+    
+    <span class="code-comment">// Process microphone input</span>
+    <span class="code-keyword">async</span> <span class="code-function">startMicrophone</span>() {
+        <span class="code-keyword">const</span> stream = <span class="code-keyword">await</span> navigator.mediaDevices
+            .<span class="code-function">getUserMedia</span>({ audio: <span class="code-keyword">true</span> });
+        
+        <span class="code-keyword">this</span>.source = <span class="code-keyword">this</span>.audioContext
+            .<span class="code-function">createMediaStreamSource</span>(stream);
+        <span class="code-keyword">this</span>.source.<span class="code-function">connect</span>(<span class="code-keyword">this</span>.analyser);
+        
+        <span class="code-keyword">this</span>.<span class="code-function">startVisualization</span>();
+    }
+    
+    <span class="code-comment">// Analyze and visualize audio data</span>
+    <span class="code-function">visualize</span>() {
+        <span class="code-keyword">if</span> (!<span class="code-keyword">this</span>.isRunning) <span class="code-keyword">return</span>;
+        
+        <span class="code-comment">// Get frequency data</span>
+        <span class="code-keyword">this</span>.analyser.<span class="code-function">getByteFrequencyData</span>(<span class="code-keyword">this</span>.dataArray);
+        
+        <span class="code-comment">// Render visualization</span>
+        <span class="code-keyword">this</span>.<span class="code-function">renderWaveform</span>(<span class="code-keyword">this</span>.dataArray);
+        
+        <span class="code-comment">// Continue animation loop</span>
+        requestAnimationFrame(() => <span class="code-keyword">this</span>.<span class="code-function">visualize</span>());
+    }
+}</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-palette"></i>
+          Visualization Modes
+        </h2>
+
+        <div class="visualization-modes">
+          <div class="mode-card">
+            <div class="mode-icon">🌊</div>
+            <h4>Waveform</h4>
+            <p>
+              Real-time waveform display showing amplitude over time with smooth
+              interpolation.
+            </p>
+          </div>
+
+          <div class="mode-card">
+            <div class="mode-icon">✨</div>
+            <h4>Particle System</h4>
+            <p>
+              Audio-reactive particles that respond to frequency and amplitude
+              changes.
+            </p>
+          </div>
+
+          <div class="mode-card">
+            <div class="mode-icon">📊</div>
+            <h4>Frequency Spectrum</h4>
+            <p>
+              FFT-based frequency analysis showing energy distribution across
+              frequency bands.
+            </p>
+          </div>
+
+          <div class="mode-card">
+            <div class="mode-icon">🌀</div>
+            <h4>Kaleidoscope</h4>
+            <p>
+              Symmetrical patterns generated from audio input with rotational
+              effects.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-sliders-h"></i>
+          Audio Features & Analysis
+        </h2>
+
+        <!-- Interactive Frequency Spectrum -->
+        <div class="frequency-spectrum">
+          <div class="spectrum-bars" id="spectrumBars"></div>
+          <div class="audio-wave"></div>
+        </div>
+
+        <div class="audio-features">
+          <div class="feature-card">
+            <div class="feature-icon">🎤</div>
+            <h4>Microphone Input</h4>
+            <p>
+              Real-time processing of live audio from microphone with noise
+              filtering.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📁</div>
+            <h4>Audio File Support</h4>
+            <p>
+              Upload and visualize MP3, WAV, and other audio formats with
+              waveform preview.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🎛️</div>
+            <h4>Tone Generator</h4>
+            <p>
+              Built-in tone generator with adjustable frequency, waveform, and
+              modulation.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔊</div>
+            <h4>Audio Effects</h4>
+            <p>
+              Real-time audio effects including reverb, delay, and filter
+              controls.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-tachometer-alt"></i>
+          Performance Optimization
+        </h2>
+
+        <div class="challenge-solution">
+          <div class="challenge">
+            <h3><i class="fas fa-memory"></i> Memory Management</h3>
+            <p>
+              Processing large audio buffers without causing memory leaks or
+              garbage collection pauses.
+            </p>
+          </div>
+          <div class="solution">
+            <h3><i class="fas fa-bolt"></i> Optimized Rendering</h3>
+            <p>
+              Implemented efficient Canvas rendering techniques and buffer reuse
+              to maintain 60 FPS.
+            </p>
+          </div>
+        </div>
+
+        <ul style="color: #cbd5e1; line-height: 1.8; margin-top: 20px">
+          <li>
+            <strong>Double Buffering:</strong> Prevents visual artifacts during
+            rendering
+          </li>
+          <li>
+            <strong>FFT Optimization:</strong> Efficient frequency domain
+            transformations
+          </li>
+          <li>
+            <strong>Canvas Layer Separation:</strong> Static and dynamic
+            elements on separate layers
+          </li>
+          <li>
+            <strong>Worker Threads:</strong> Offloads heavy audio processing
+            from main thread
+          </li>
+          <li>
+            <strong>Memory Pooling:</strong> Reuses audio buffers to prevent
+            garbage collection
+          </li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-chart-line"></i>
+          Technical Results
+        </h2>
+
+        <div class="challenge-solution">
+          <div class="challenge">
+            <h3><i class="fas fa-microchip"></i> CPU Usage</h3>
+            <p>
+              Maintained under 15% CPU usage on average devices while processing
+              real-time audio
+            </p>
+          </div>
+          <div class="solution">
+            <h3><i class="fas fa-clock"></i> Latency</h3>
+            <p>
+              Achieved less than 16ms processing latency for real-time audio
+              visualization
+            </p>
+          </div>
+        </div>
+
+        <p>
+          The visualizer demonstrates that complex audio processing and
+          real-time visualization can be achieved in the browser with excellent
+          performance and visual quality.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">
+          <i class="fas fa-graduation-cap"></i>
+          Lessons Learned
+        </h2>
+        <p>
+          This project provided deep insights into real-time audio processing
+          and browser performance optimization:
+        </p>
+        <ul style="color: #cbd5e1; line-height: 1.8">
+          <li>
+            Web Audio API provides powerful tools but requires careful buffer
+            management
+          </li>
+          <li>
+            Canvas rendering performance is highly dependent on update
+            strategies
+          </li>
+          <li>
+            Audio visualization requires balancing between detail and
+            performance
+          </li>
+          <li>
+            Microphone permissions and audio context state management are
+            crucial for UX
+          </li>
+          <li>
+            Different visualization modes work better with different types of
+            music
+          </li>
+        </ul>
+      </div>
+    </main>
+
+    <footer class="case-footer">
+      <p>© 2024 Cynthia Kiprop • Interactive Music Visualizer Case Study</p>
+      <div
+        style="
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          margin-top: 15px;
+          flex-wrap: wrap;
+        "
+      >
+        <a href="../lab/index.html#music" class="contact-link">
+          <i class="fas fa-play-circle"></i>
+          Try the Visualizer
+        </a>
+        <a href="index.htm" class="contact-link">
+          <i class="fas fa-list"></i>
+          View All Cases
+        </a>
+        <a href="../#contact" class="contact-link">
+          <i class="fas fa-envelope"></i>
+          Contact for Details
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      // Create animated waveform preview
+      const waveformPreview = document.getElementById("waveformPreview");
+      const spectrumBars = document.getElementById("spectrumBars");
+
+      // Create frequency bars for preview
+      for (let i = 0; i < 64; i++) {
+        const bar = document.createElement("div");
+        bar.className = "frequency-bar";
+        bar.style.setProperty("--i", i);
+        bar.style.height = `${20 + Math.sin(i * 0.2) * 30}%`;
+        waveformPreview.appendChild(bar);
+      }
+
+      // Create spectrum bars
+      for (let i = 0; i < 32; i++) {
+        const bar = document.createElement("div");
+        bar.className = "spectrum-bar";
+        bar.style.height = `${30 + Math.random() * 50}%`;
+        spectrumBars.appendChild(bar);
+      }
+
+      // Animate spectrum bars
+      function animateSpectrum() {
+        const bars = spectrumBars.querySelectorAll(".spectrum-bar");
+        bars.forEach((bar, i) => {
+          const newHeight = 30 + Math.sin(Date.now() * 0.001 + i * 0.3) * 40;
+          bar.style.height = `${newHeight}%`;
+          bar.style.opacity = 0.7 + Math.sin(Date.now() * 0.002 + i) * 0.3;
+        });
+        requestAnimationFrame(animateSpectrum);
+      }
+
+      animateSpectrum();
+
+      // Interactive control buttons
+      const controlButtons = document.querySelectorAll(
+        ".control-btn[data-mode]"
+      );
+      controlButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          controlButtons.forEach((btn) => btn.classList.remove("active"));
+          this.classList.add("active");
+
+          const mode = this.dataset.mode;
+          const bars = waveformPreview.querySelectorAll(".frequency-bar");
+
+          // Change animation based on mode
+          bars.forEach((bar, i) => {
+            if (mode === "waveform") {
+              bar.style.animationDuration = "1.5s";
+              bar.style.background =
+                "linear-gradient(to top, #8b5cf6, #ec4899)";
+            } else if (mode === "particles") {
+              bar.style.animationDuration = "0.8s";
+              bar.style.background =
+                "linear-gradient(to top, #60a5fa, #3b82f6)";
+            } else if (mode === "spectrum") {
+              bar.style.animationDuration = "2s";
+              bar.style.background =
+                "linear-gradient(to top, #10b981, #059669)";
+            }
+          });
+        });
+      });
+
+      // Add hover effect to mode cards
+      document.querySelectorAll(".mode-card").forEach((card) => {
+        card.addEventListener("mouseenter", () => {
+          card.style.transform = "translateY(-8px) scale(1.02)";
+        });
+
+        card.addEventListener("mouseleave", () => {
+          card.style.transform = "";
+        });
+      });
+
+      // Animate particles on click
+      document.querySelectorAll(".particle-preview").forEach((particle) => {
+        particle.addEventListener("click", () => {
+          particle.style.transform = "scale(2)";
+          particle.style.opacity = "0";
+          setTimeout(() => {
+            particle.style.transform = "";
+            particle.style.opacity = "";
+          }, 500);
+        });
+      });
+    </script>
+  </body>
+</html>

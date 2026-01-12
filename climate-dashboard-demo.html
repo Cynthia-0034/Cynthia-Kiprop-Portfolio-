@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌡️ Climate Data Dashboard - Cute & Interactive</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* 🌸 Cute Variables & Reset */
+      :root {
+        --primary-pink: #2d7eff;
+        --primary-blue: #36b9fe;
+        --primary-green: #1f3a5f;
+        --primary-purple: #d0f0fd;
+        --primary-cyan: #60a5fa;
+        --bg-dark: #1a1b2e;
+        --bg-card: rgba(255, 255, 255, 0.1);
+        --text-light: #ffffff;
+        --text-soft: rgba(255, 255, 255, 0.8);
+        --shadow-cute: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+        --radius-large: 25px;
+        --radius-small: 15px;
+        --transition-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #1a1b2e 0%,
+          #2a2b3e 50%,
+          #1a1b2e 100%
+        );
+        color: var(--text-light);
+        min-height: 100vh;
+        padding: 20px;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* 🌸 Floating Particles Background */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 141, 160, 0.05) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(138, 198, 253, 0.05) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(212, 165, 255, 0.03) 0%,
+            transparent 60%
+          );
+      }
+
+      @keyframes floatParticles {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        33% {
+          transform: translate(30px, -20px);
+        }
+        66% {
+          transform: translate(-20px, 30px);
+        }
+      }
+
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* 🌸 Cute Header */
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 141, 160, 0.15),
+          rgba(138, 198, 253, 0.15)
+        );
+        border-radius: var(--radius-large);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow-cute);
+        position: relative;
+        overflow: hidden;
+      }
+
+      @keyframes headerFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.05) 50%,
+          transparent 70%
+        );
+        animation: shine 6s infinite linear;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .header h1 {
+        font-family: "Quicksand", sans-serif;
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(
+          135deg,
+          var(--primary-pink) 0%,
+          var(--primary-blue) 25%,
+          var(--primary-green) 50%,
+          var(--primary-cyan) 75%,
+          var(--primary-pink) 100%
+        );
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: rainbowText 4s linear infinite;
+        margin-bottom: 10px;
+        display: inline-block;
+      }
+
+      @keyframes rainbowText {
+        0% {
+          background-position: 0% center;
+        }
+        100% {
+          background-position: 300% center;
+        }
+      }
+
+      .header-subtitle {
+        color: var(--text-soft);
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      @keyframes sparkle {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+        }
+        50% {
+          transform: scale(1.2) rotate(20deg);
+        }
+      }
+
+      /* 🌸 Timeframe Selector - Cute Bubbles */
+      .timeframe-selector {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .time-btn {
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        color: var(--text-soft);
+        font-family: "Quicksand", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.4s var(--transition-bounce);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+
+      .time-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .time-btn:hover::before {
+        left: 100%;
+      }
+
+      .time-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        border-color: var(--primary-cyan);
+      }
+
+      .time-btn.active {
+        background: linear-gradient(110deg, var(--primary-cyan));
+        border-color: transparent;
+      }
+
+      /* 🌸 Stats Grid - Cute Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 50px;
+      }
+
+      .stat-card {
+        /*background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.05)
+        );*/
+        border-radius: var(--radius-large);
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(15px);
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        animation: cardShine 6s infinite linear;
+      }
+
+      @keyframes cardShine {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .stat-card:hover {
+        border-color: var(--primary-blue);
+      }
+
+      .stat-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 141, 160, 0.2),
+          rgba(138, 198, 253, 0.2)
+        );
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #36b9fe;
+      }
+
+      @keyframes iconFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(10deg);
+        }
+      }
+
+      .stat-value {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(
+          135deg,
+          var(--primary-pink),
+          var(--primary-blue)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 5px;
+        line-height: 1;
+      }
+
+      .stat-label {
+        color: var(--text-soft);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+
+      .stat-trend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+        padding: 8px 15px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50px;
+        display: inline-flex;
+        color: #36b9fe;
+      }
+
+      .trend-up {
+        color: var(--primary-pink);
+      }
+
+      .trend-down {
+        color: #36b9fe;
+      }
+
+      /* 🌸 Dashboard Controls - Cute Buttons */
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+      }
+
+      .control-btn {
+        padding: 15px 25px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        color: var(--text-soft);
+        font-family: "Quicksand", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+
+      .control-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .control-btn:hover::before {
+        left: 100%;
+      }
+
+      .control-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+      }
+
+      .control-btn.active {
+        border-color: transparent;
+        color: rgb(253, 252, 252);
+
+        transform: translateY(-5px) scale(1.05);
+      }
+
+      /* 🌸 Dashboard Grid - Cute Charts */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .chart-container {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.05)
+        );
+        border-radius: var(--radius-large);
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .chart-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        color: var(--text-light);
+        font-size: 1.4rem;
+        font-weight: 600;
+        font-family: "Quicksand", sans-serif;
+      }
+
+      .chart-title i {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 141, 160, 0.2),
+          rgba(138, 198, 253, 0.2)
+        );
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--primary-blue);
+      }
+
+      .chart-wrapper {
+        height: 320px;
+        position: relative;
+      }
+
+      /* 🌸 Custom Chart.js Styles */
+      .chartjs-render-monitor {
+        animation: chartAppear 1s var(--transition-bounce);
+      }
+
+      @keyframes chartAppear {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 🌸 Data Source - Cute Footer */
+      .data-source {
+        text-align: center;
+        color: var(--text-soft);
+        font-size: 1rem;
+        margin-top: 60px;
+        padding-top: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        position: relative;
+      }
+
+      .data-source p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .data-source i {
+        color: var(--primary-cyan);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      /* 🌸 Footer - Back Button */
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 141, 160, 0.1),
+          rgba(138, 198, 253, 0.1)
+        );
+        border-radius: var(--radius-large);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+      }
+
+      .footer p {
+        color: var(--text-soft);
+        font-size: 1rem;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 30px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-pink),
+          var(--primary-purple)
+        );
+        color: rgb(8, 8, 8);
+        text-decoration: none;
+        border-radius: 50px;
+        font-family: "Quicksand", sans-serif;
+        font-weight: 600;
+        transition: all 0.4s var(--transition-bounce);
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .back-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(255, 141, 160, 0.4),
+          0 0 40px rgba(255, 141, 160, 0.2);
+      }
+
+      /*  Responsive Design */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2.2rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-container {
+          padding: 20px;
+        }
+
+        .chart-wrapper {
+          height: 280px;
+        }
+
+        .timeframe-selector {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .time-btn {
+          width: 200px;
+          justify-content: center;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .control-btn {
+          width: 200px;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+        }
+
+        .stat-value {
+          font-size: 2.5rem;
+        }
+
+        .chart-title {
+          font-size: 1.2rem;
+        }
+      }
+
+      /*  Loading Animation */
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loading-emoji {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        animation: loadingSpin 2s linear infinite;
+      }
+
+      @keyframes loadingSpin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-family: "Quicksand", sans-serif;
+        font-size: 1.5rem;
+        color: var(--primary-cyan);
+        animation: loadingPulse 2s infinite;
+      }
+
+      @keyframes loadingPulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+      <div class="loading-emoji">🌡️</div>
+      <div class="loading-text">Loading Climate Data...</div>
+    </div>
+
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>🌡️ Climate Data Dashboard</h1>
+        <div class="header-subtitle">
+          Interactive visualization of global climate trends
+        </div>
+        <div class="timeframe-selector">
+          <button class="time-btn active" onclick="updateTimeframe('10y')">
+            <i class="far fa-calendar-alt"></i>
+            <span>10 Years</span>
+          </button>
+          <button class="time-btn" onclick="updateTimeframe('50y')">
+            <i class="far fa-calendar-alt"></i>
+            <span>50 Years</span>
+          </button>
+          <button class="time-btn" onclick="updateTimeframe('100y')">
+            <i class="far fa-calendar-alt"></i>
+            <span>100 Years</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-thermometer-half"></i>
+          </div>
+          <div class="stat-value" id="tempValue">+1.2°C</div>
+          <div class="stat-label">Global Temperature Rise</div>
+          <div class="stat-trend trend-up">
+            <i class="fas fa-arrow-up"></i>
+            <span>+0.18°C per decade</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-smog"></i>
+          </div>
+          <div class="stat-value" id="co2Value">415 ppm</div>
+          <div class="stat-label">Atmospheric CO₂</div>
+          <div class="stat-trend trend-up">
+            <i class="fas fa-arrow-up"></i>
+            <span>+2.5 ppm per year</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-mountain"></i>
+          </div>
+          <div class="stat-value" id="iceValue">-13%</div>
+          <div class="stat-label">Arctic Sea Ice Loss</div>
+          <div class="stat-trend trend-up">
+            <i class="fas fa-arrow-up"></i>
+            <span>Accelerating since 2000</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-value" id="confidenceValue">95%</div>
+          <div class="stat-label">Scientific Confidence</div>
+          <div class="stat-trend trend-down">
+            <i class="fas fa-arrow-down"></i>
+            <span>Uncertainty decreasing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button
+          class="control-btn active"
+          onclick="toggleDataset('temperature')"
+        >
+          <i class="fas fa-fire"></i>
+          <span>Temperature</span>
+        </button>
+        <button class="control-btn" onclick="toggleDataset('co2')">
+          <i class="fas fa-industry"></i>
+          <span>CO₂ Emissions</span>
+        </button>
+        <button class="control-btn" onclick="toggleDataset('sea')">
+          <i class="fas fa-water"></i>
+          <span>Sea Level</span>
+        </button>
+        <button class="control-btn" onclick="toggleDataset('ice')">
+          <i class="fas fa-snowflake"></i>
+          <span>Sea Ice</span>
+        </button>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <div class="chart-container">
+          <div class="chart-title">
+            <i class="fas fa-chart-line"></i>
+            <span>Global Temperature Anomalies</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="tempChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">
+            <i class="fas fa-chart-bar"></i>
+            <span>CO₂ Concentration Trends</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="co2Chart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">
+            <i class="fas fa-globe-americas"></i>
+            <span>Regional Impact Analysis</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="regionalChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">
+            <i class="fas fa-project-diagram"></i>
+            <span>Correlation Analysis</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="correlationChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Source -->
+      <div class="data-source">
+        <p>
+          <i class="fas fa-database"></i>
+          Data Sources: NASA GISTEMP, NOAA, IPCC AR6, Mauna Loa Observatory
+          <i class="fas fa-sync-alt"></i>
+          Updated: <span id="updateDate">Today</span>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>
+          This interactive dashboard was built using Chart.js and custom
+          animations.
+          <br />
+          Real-time climate data visualization for a better understanding of our
+          planet's health.
+        </p>
+        <button class="back-btn" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Portfolio</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Hide loading screen after 1.5 seconds
+      setTimeout(() => {
+        document.getElementById("loading").classList.add("hidden");
+      }, 1500);
+
+      // Set current date with cute formatting
+      document.getElementById("updateDate").textContent =
+        new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          weekday: "long",
+        });
+
+      // Generate realistic climate data with some randomness
+      function generateClimateData(years = 10) {
+        const data = {
+          years: [],
+          temperature: [],
+          co2: [],
+          seaLevel: [],
+          seaIce: [],
+        };
+
+        const baseYear = 2024 - years;
+        for (let i = 0; i <= years; i++) {
+          const year = baseYear + i;
+          data.years.push(year);
+
+          // Generate realistic trends with some variation
+          const temp = 0.5 + i * (0.18 + Math.random() * 0.05);
+          const co2 = 320 + i * (2.5 + Math.random() * 0.3);
+          const sea = 0 + i * (3.2 + Math.random() * 0.5);
+          const ice = 100 - i * (1.3 + Math.random() * 0.2);
+
+          data.temperature.push(temp);
+          data.co2.push(co2);
+          data.seaLevel.push(sea);
+          data.seaIce.push(ice);
+        }
+
+        return data;
+      }
+
+      // Chart instances
+      let tempChart, co2Chart, regionalChart, correlationChart;
+      let currentData = generateClimateData(10);
+
+      // Initialize all charts with cute styling
+      function initCharts() {
+        // Temperature Chart
+        const ctx1 = document.getElementById("tempChart").getContext("2d");
+        tempChart = new Chart(ctx1, {
+          type: "line",
+          data: {
+            labels: currentData.years,
+            datasets: [
+              {
+                label: "Temperature Anomaly (°C)",
+                data: currentData.temperature,
+                borderColor: "#ff8da0",
+                backgroundColor: "rgba(255, 141, 160, 0.2)",
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: "#ffffff",
+                pointBorderColor: "#ff8da0",
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 8,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#ffffff",
+                  font: {
+                    family: "'Quicksand', sans-serif",
+                    size: 14,
+                  },
+                },
+              },
+              tooltip: {
+                mode: "index",
+                intersect: false,
+                backgroundColor: "rgba(26, 27, 46, 0.9)",
+                titleColor: "#8ac6fd",
+                bodyColor: "#ffffff",
+                borderColor: "#8ac6fd",
+                borderWidth: 1,
+                cornerRadius: 15,
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+              },
+              y: {
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                  callback: function (value) {
+                    return value + "°C";
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // CO2 Chart
+        const ctx2 = document.getElementById("co2Chart").getContext("2d");
+        co2Chart = new Chart(ctx2, {
+          type: "bar",
+          data: {
+            labels: currentData.years,
+            datasets: [
+              {
+                label: "CO₂ Concentration (ppm)",
+                data: currentData.co2,
+                backgroundColor: "rgba(138, 198, 253, 0.6)",
+                borderColor: "rgba(138, 198, 253, 1)",
+                borderWidth: 1,
+                borderRadius: 10,
+                borderSkipped: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#ffffff",
+                  font: {
+                    family: "'Quicksand', sans-serif",
+                    size: 14,
+                  },
+                },
+              },
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+              },
+              y: {
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                  callback: function (value) {
+                    return value + " ppm";
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // Regional Chart
+        const ctx3 = document.getElementById("regionalChart").getContext("2d");
+        regionalChart = new Chart(ctx3, {
+          type: "radar",
+          data: {
+            labels: [
+              "Arctic",
+              "North America",
+              "Europe",
+              "Asia",
+              "Africa",
+              "Australia",
+              "Antarctica",
+            ],
+            datasets: [
+              {
+                label: "Temperature Impact",
+                data: [3.5, 1.8, 1.6, 1.9, 1.2, 1.1, 2.2],
+                backgroundColor: "rgba(255, 141, 160, 0.2)",
+                borderColor: "#ff8da0",
+                borderWidth: 2,
+                pointBackgroundColor: "#ff8da0",
+              },
+              {
+                label: "Sea Level Impact",
+                data: [1.8, 2.1, 1.9, 2.3, 1.6, 1.8, 2.0],
+                backgroundColor: "rgba(100, 223, 223, 0.2)",
+                borderColor: "#64dfdf",
+                borderWidth: 2,
+                pointBackgroundColor: "#64dfdf",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#ffffff",
+                  font: {
+                    family: "'Quicksand', sans-serif",
+                    size: 14,
+                  },
+                },
+              },
+            },
+            scales: {
+              r: {
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                angleLines: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                pointLabels: {
+                  color: "rgba(255, 255, 255, 0.9)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  backdropColor: "transparent",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // Correlation Chart
+        const ctx4 = document
+          .getElementById("correlationChart")
+          .getContext("2d");
+        correlationChart = new Chart(ctx4, {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Temperature vs CO₂",
+                data: currentData.co2.map((co2, index) => ({
+                  x: co2,
+                  y: currentData.temperature[index],
+                })),
+                backgroundColor: "rgba(168, 230, 207, 0.6)",
+                borderColor: "#a8e6cf",
+                borderWidth: 1,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  color: "#ffffff",
+                  font: {
+                    family: "'Quicksand', sans-serif",
+                    size: 14,
+                  },
+                },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return `CO₂: ${context.parsed.x.toFixed(
+                      1
+                    )} ppm, Temp: ${context.parsed.y.toFixed(2)}°C`;
+                  },
+                },
+              },
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "CO₂ Concentration (ppm)",
+                  color: "#8ac6fd",
+                  font: {
+                    family: "'Quicksand', sans-serif",
+                    size: 16,
+                    weight: "600",
+                  },
+                },
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Temperature Anomaly (°C)",
+                  color: "#ff8da0",
+                  font: {
+                    family: "'Quicksand', sans-serif",
+                    size: 16,
+                    weight: "600",
+                  },
+                },
+                grid: {
+                  color: "rgba(255, 255, 255, 0.1)",
+                },
+                ticks: {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  font: {
+                    family: "'Poppins', sans-serif",
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Update timeframe with animations
+      function updateTimeframe(years) {
+        // Update button states
+        document
+          .querySelectorAll(".time-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        event.target.classList.add("active");
+
+        // Add cute animation to clicked button
+        event.target.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          event.target.style.transform = "";
+        }, 150);
+
+        let yearCount;
+        switch (years) {
+          case "10y":
+            yearCount = 10;
+            break;
+          case "50y":
+            yearCount = 50;
+            break;
+          case "100y":
+            yearCount = 100;
+            break;
+        }
+
+        // Generate new data
+        currentData = generateClimateData(yearCount);
+
+        // Animate chart updates
+        animateChartUpdate(
+          tempChart,
+          currentData.years,
+          currentData.temperature
+        );
+        animateChartUpdate(co2Chart, currentData.years, currentData.co2);
+
+        // Update correlation chart
+        correlationChart.data.datasets[0].data = currentData.co2.map(
+          (co2, index) => ({
+            x: co2,
+            y: currentData.temperature[index],
+          })
+        );
+        correlationChart.update("none");
+
+        // Update stats with animation
+        updateStatsWithAnimation();
+      }
+
+      // Animate chart updates
+      function animateChartUpdate(chart, labels, data) {
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+
+        // Add transition effect
+        chart.options.animation = {
+          duration: 1000,
+          easing: "easeOutQuart",
+        };
+
+        chart.update();
+
+        // Reset animation
+        setTimeout(() => {
+          chart.options.animation = {};
+        }, 1000);
+      }
+
+      // Update stats with cute animations
+      function updateStatsWithAnimation() {
+        const tempEl = document.getElementById("tempValue");
+        const co2El = document.getElementById("co2Value");
+
+        // Animate temperature
+        const tempValue =
+          currentData.temperature[currentData.temperature.length - 1];
+        animateCounter(tempEl, tempValue.toFixed(1), "+", "°C");
+
+        // Animate CO2
+        const co2Value = Math.round(
+          currentData.co2[currentData.co2.length - 1]
+        );
+        animateCounter(co2El, co2Value, "", " ppm");
+      }
+
+      // Animate number counters
+      function animateCounter(element, target, prefix = "", suffix = "") {
+        const current = parseFloat(
+          element.textContent.replace(prefix, "").replace(suffix, "")
+        );
+        const increment = (target - current) / 30;
+        let currentValue = current;
+
+        const timer = setInterval(() => {
+          currentValue += increment;
+          if (
+            (increment > 0 && currentValue >= target) ||
+            (increment < 0 && currentValue <= target)
+          ) {
+            currentValue = target;
+            clearInterval(timer);
+          }
+          element.textContent = prefix + currentValue.toFixed(1) + suffix;
+        }, 16);
+      }
+
+      // Toggle dataset with cute effects
+      function toggleDataset(type) {
+        // Update button states
+        document
+          .querySelectorAll(".control-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        event.target.classList.add("active");
+
+        // Add bounce animation
+        event.target.style.transform = "scale(0.9)";
+        setTimeout(() => {
+          event.target.style.transform = "";
+        }, 150);
+
+        // In a real implementation, this would switch datasets
+        console.log("Switching to dataset:", type);
+
+        // Show cute notification
+        showNotification(
+          `Now showing: ${type
+            .replace("temperature", "🌡️ Temperature")
+            .replace("co2", "🏭 CO₂ Emissions")
+            .replace("sea", "🌊 Sea Level")
+            .replace("ice", "❄️ Sea Ice")}`
+        );
+      }
+
+      // Show cute notification
+      function showNotification(message) {
+        const notification = document.createElement("div");
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+          color: white;
+          padding: 15px 25px;
+          border-radius: 50px;
+          font-family: 'Quicksand', sans-serif;
+          font-weight: 600;
+          box-shadow: var(--shadow-cute);
+          z-index: 1000;
+          transform: translateX(120%);
+          transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+          notification.style.transform = "translateX(0)";
+        }, 10);
+
+        // Animate out after 3 seconds
+        setTimeout(() => {
+          notification.style.transform = "translateX(120%)";
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 500);
+        }, 3000);
+      }
+
+      // Go back to portfolio
+      function goBack() {
+        // Add exit animation
+        document.body.style.opacity = "0.5";
+        document.body.style.transform = "scale(0.95)";
+        document.body.style.transition = "all 0.3s ease";
+
+        setTimeout(() => {
+          window.history.back();
+        }, 300);
+      }
+
+      // Initialize everything when page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        initCharts();
+
+        // Add some interactive hover effects
+        addHoverEffects();
+
+        // Simulate data updates every 30 seconds
+        setInterval(() => {
+          // In a real app, this would fetch new data
+          console.log("Simulating data refresh...");
+        }, 30000);
+      });
+
+      // Add cute hover effects to cards
+      function addHoverEffects() {
+        const cards = document.querySelectorAll(".stat-card, .chart-container");
+        cards.forEach((card) => {
+          card.addEventListener("mouseenter", () => {
+            card.style.zIndex = "10";
+          });
+
+          card.addEventListener("mouseleave", () => {
+            card.style.zIndex = "";
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

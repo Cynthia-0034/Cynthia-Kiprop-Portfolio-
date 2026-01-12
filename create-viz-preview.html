@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climate Dashboard Preview</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .preview-container {
+        width: 800px;
+        height: 450px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .title {
+        color: #4fc3f7;
+        font-size: 24px;
+        font-weight: bold;
+        font-family: "Arial", sans-serif;
+      }
+
+      .date {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 14px;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 15px;
+        height: calc(100% - 60px);
+      }
+
+      .chart-container {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 15px;
+        position: relative;
+      }
+
+      .chart-title {
+        color: #81c784;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Temperature Chart */
+      .temp-chart {
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 82, 82, 0.1),
+          rgba(255, 82, 82, 0.05)
+        );
+      }
+
+      .temp-line {
+        height: 120px;
+        width: 100%;
+        position: relative;
+      }
+
+      .temp-line::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(255, 82, 82, 0.3);
+        transform: translateY(-50%);
+      }
+
+      .temp-points {
+        display: flex;
+        justify-content: space-around;
+        height: 100%;
+        align-items: flex-end;
+      }
+
+      .temp-point {
+        width: 8px;
+        background: linear-gradient(to top, #ff5252, #ff8a80);
+        border-radius: 4px 4px 0 0;
+        animation: rise 2s ease-out;
+      }
+
+      @keyframes rise {
+        from {
+          height: 0;
+        }
+      }
+
+      /* CO2 Chart */
+      .co2-chart {
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 193, 7, 0.1),
+          rgba(255, 193, 7, 0.05)
+        );
+      }
+
+      .co2-bar {
+        height: 120px;
+        display: flex;
+        align-items: flex-end;
+      }
+
+      .co2-bar-item {
+        flex: 1;
+        background: linear-gradient(to top, #ffb300, #ffca28);
+        margin: 0 2px;
+        border-radius: 3px 3px 0 0;
+        animation: grow 2s ease-out;
+      }
+
+      @keyframes grow {
+        from {
+          height: 0;
+        }
+      }
+
+      /* Map */
+      .map-container {
+        background: linear-gradient(
+          to bottom,
+          rgba(33, 150, 243, 0.1),
+          rgba(33, 150, 243, 0.05)
+        );
+        grid-column: 1;
+      }
+
+      .world-map {
+        width: 100%;
+        height: 120px;
+        position: relative;
+      }
+
+      .continent {
+        position: absolute;
+        background: rgba(33, 150, 243, 0.3);
+        border-radius: 50%;
+      }
+
+      .north-america {
+        width: 40px;
+        height: 40px;
+        top: 20px;
+        left: 50px;
+      }
+
+      .europe {
+        width: 30px;
+        height: 30px;
+        top: 25px;
+        left: 150px;
+      }
+
+      .asia {
+        width: 50px;
+        height: 50px;
+        top: 30px;
+        left: 200px;
+      }
+
+      /* Ice Chart */
+      .ice-chart {
+        background: linear-gradient(
+          to bottom,
+          rgba(3, 169, 244, 0.1),
+          rgba(3, 169, 244, 0.05)
+        );
+      }
+
+      .ice-donut {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: conic-gradient(
+          #4fc3f7 0deg 120deg,
+          #03a9f4 120deg 240deg,
+          #0277bd 240deg 360deg
+        );
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .ice-center {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: #16213e;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Data Points */
+      .data-points {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .data-point {
+        text-align: center;
+      }
+
+      .data-value {
+        color: #4fc3f7;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .data-label {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+      }
+
+      /* Glowing effect */
+      .glow {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(79, 195, 247, 0.2) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+        filter: blur(20px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-container">
+      <div class="glow"></div>
+      <div class="header">
+        <div class="title">🌍 Climate Data Dashboard</div>
+        <div class="date">Last Updated: Today</div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="chart-container temp-chart">
+          <div class="chart-title">Global Temperature Trend</div>
+          <div class="temp-line">
+            <div class="temp-points">
+              <div class="temp-point" style="height: 40%"></div>
+              <div class="temp-point" style="height: 60%"></div>
+              <div class="temp-point" style="height: 80%"></div>
+              <div class="temp-point" style="height: 90%"></div>
+              <div class="temp-point" style="height: 95%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container co2-chart">
+          <div class="chart-title">CO₂ Levels (ppm)</div>
+          <div class="co2-bar">
+            <div class="co2-bar-item" style="height: 40%"></div>
+            <div class="co2-bar-item" style="height: 55%"></div>
+            <div class="co2-bar-item" style="height: 65%"></div>
+            <div class="co2-bar-item" style="height: 75%"></div>
+            <div class="co2-bar-item" style="height: 85%"></div>
+            <div class="co2-bar-item" style="height: 95%"></div>
+          </div>
+        </div>
+
+        <div class="chart-container map-container">
+          <div class="chart-title">Heat Map - Global Distribution</div>
+          <div class="world-map">
+            <div class="continent north-america"></div>
+            <div class="continent europe"></div>
+            <div class="continent asia"></div>
+          </div>
+        </div>
+
+        <div class="chart-container ice-chart">
+          <div class="chart-title">Arctic Sea Ice Extent</div>
+          <div class="ice-donut">
+            <div class="ice-center"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-points">
+        <div class="data-point">
+          <div class="data-value">+1.2°C</div>
+          <div class="data-label">Temp Rise</div>
+        </div>
+        <div class="data-point">
+          <div class="data-value">415 ppm</div>
+          <div class="data-label">CO₂ Level</div>
+        </div>
+        <div class="data-point">
+          <div class="data-value">-13%</div>
+          <div class="data-label">Sea Ice</div>
+        </div>
+        <div class="data-point">
+          <div class="data-value">95%</div>
+          <div class="data-label">Confidence</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
