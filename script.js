@@ -1286,13 +1286,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       this.ctx = this.canvas.getContext("2d");
-      this.canvas.width = 500;
+      this.canvas.width = this.canvas.parentElement.clientWidth;
       this.canvas.height = 300;
 
       this.particles = [];
       this.blackHoles = [];
       this.gravity = 1.0;
       this.trailOpacity = 0.8;
+      this.lastTime = 0;
+      this.fps = 60;
 
       // Create initial stars
       this.createStars(150);
@@ -1301,7 +1303,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.setupControls();
 
       // Start animation
-      scheduler.add(() => this.update());
+      this.animate();
 
       console.log("✓ Particle Galaxy ready");
     }
@@ -1309,12 +1311,12 @@ document.addEventListener("DOMContentLoaded", () => {
     createStars(count) {
       for (let i = 0; i < count; i++) {
         this.particles.push({
-          x: utils.random(0, this.canvas.width),
-          y: utils.random(0, this.canvas.height),
-          vx: utils.random(-0.5, 0.5),
-          vy: utils.random(-0.5, 0.5),
-          radius: utils.random(1, 3),
-          color: `hsl(${utils.random(200, 300)}, 100%, 70%)`,
+          x: Math.random() * this.canvas.width,
+          y: Math.random() * this.canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          radius: Math.random() * 2 + 1,
+          color: `hsl(${Math.random() * 100 + 200}, 100%, 70%)`,
           trail: [],
         });
       }
@@ -1323,12 +1325,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addStar(x, y) {
       this.particles.push({
-        x: x || utils.random(0, this.canvas.width),
-        y: y || utils.random(0, this.canvas.height),
-        vx: utils.random(-2, 2),
-        vy: utils.random(-2, 2),
-        radius: utils.random(2, 5),
-        color: `hsl(${utils.random(0, 360)}, 100%, 70%)`,
+        x: x || Math.random() * this.canvas.width,
+        y: y || Math.random() * this.canvas.height,
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2,
+        radius: Math.random() * 3 + 2,
+        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
         trail: [],
       });
       this.updateStats();
@@ -1340,6 +1342,7 @@ document.addEventListener("DOMContentLoaded", () => {
         y: y || this.canvas.height / 2,
         radius: 15,
         mass: 1000,
+        glowPulse: 0,
       });
       this.updateStats();
     }
@@ -1350,11 +1353,19 @@ document.addEventListener("DOMContentLoaded", () => {
       this.createStars(150);
     }
 
-    update() {
-      if (isPaused) return;
+    animate(timestamp) {
+      // Calculate FPS
+      if (this.lastTime) {
+        this.fps = Math.round(1000 / (timestamp - this.lastTime));
+      }
+      this.lastTime = timestamp;
+
+      // Update FPS display
+      const fpsEl = document.getElementById("galaxyFPS");
+      if (fpsEl) fpsEl.textContent = this.fps;
 
       // Clear with trail effect
-      this.ctx.fillStyle = `rgba(0, 0, 0, ${1 - this.trailOpacity})`;
+      this.ctx.fillStyle = `rgba(15, 23, 42, ${1 - this.trailOpacity})`;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
       // Update particles
@@ -1367,7 +1378,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.blackHoles.forEach((bh) => {
           const dx = bh.x - p.x;
           const dy = bh.y - p.y;
-          const dist = Math.max(10, utils.distance(p.x, p.y, bh.x, bh.y));
+          const dist = Math.max(10, Math.sqrt(dx * dx + dy * dy));
           const force = (bh.mass / (dist * dist)) * this.gravity * 0.1;
 
           p.vx += (dx / dist) * force;
@@ -1383,8 +1394,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (p.y < 0 || p.y > this.canvas.height) p.vy *= -0.9;
 
         // Keep in bounds
-        p.x = utils.clamp(p.x, 0, this.canvas.width);
-        p.y = utils.clamp(p.y, 0, this.canvas.height);
+        p.x = Math.max(0, Math.min(p.x, this.canvas.width));
+        p.y = Math.max(0, Math.min(p.y, this.canvas.height));
 
         // Draw trail
         p.trail.forEach((point, i) => {
@@ -1403,27 +1414,66 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // Draw black holes
+      const time = Date.now() * 0.001;
       this.blackHoles.forEach((bh) => {
-        // Black hole
+        // Update glow pulse
+        bh.glowPulse = Math.sin(time * 2) * 0.3 + 0.7;
+
+        // Black hole with event horizon glow
+        const gradient = this.ctx.createRadialGradient(
+          bh.x,
+          bh.y,
+          bh.radius * 0.5,
+          bh.x,
+          bh.y,
+          bh.radius * 2
+        );
+        gradient.addColorStop(0, "rgba(0, 0, 0, 1)");
+        gradient.addColorStop(0.7, `rgba(100, 20, 200, ${bh.glowPulse * 0.5})`);
+        gradient.addColorStop(1, "rgba(180, 76, 255, 0)");
+
+        // Event horizon glow
+        this.ctx.fillStyle = gradient;
+        this.ctx.beginPath();
+        this.ctx.arc(bh.x, bh.y, bh.radius * 2, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Black hole core
         this.ctx.fillStyle = "#000";
         this.ctx.beginPath();
         this.ctx.arc(bh.x, bh.y, bh.radius, 0, Math.PI * 2);
         this.ctx.fill();
 
         // Accretion disk
-        this.ctx.strokeStyle = "rgba(180, 76, 255, 0.5)";
+        this.ctx.strokeStyle = `rgba(180, 76, 255, ${
+          0.3 + Math.sin(time) * 0.2
+        })`;
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
-        this.ctx.arc(bh.x, bh.y, bh.radius * 2, 0, Math.PI * 2);
+        this.ctx.arc(bh.x, bh.y, bh.radius * 2.5, 0, Math.PI * 2);
+        this.ctx.stroke();
+
+        // Inner disk
+        this.ctx.strokeStyle = `rgba(100, 20, 200, ${
+          0.5 + Math.cos(time * 1.5) * 0.2
+        })`;
+        this.ctx.lineWidth = 1;
+        this.ctx.beginPath();
+        this.ctx.arc(bh.x, bh.y, bh.radius * 1.5, 0, Math.PI * 2);
         this.ctx.stroke();
       });
 
       this.updateStats();
+      requestAnimationFrame((t) => this.animate(t));
     }
 
     updateStats() {
       const starCountEl = document.getElementById("starCount");
       if (starCountEl) starCountEl.textContent = this.particles.length;
+
+      const blackHoleCountEl = document.getElementById("blackHoleCount");
+      if (blackHoleCountEl)
+        blackHoleCountEl.textContent = this.blackHoles.length;
     }
 
     setupControls() {
@@ -1453,11 +1503,18 @@ document.addEventListener("DOMContentLoaded", () => {
       document
         .getElementById("galaxyAddStar")
         ?.addEventListener("click", () => this.addStar());
+
+      // Added button for black holes
       document
         .getElementById("galaxyAddBlackHole")
-        ?.addEventListener("click", () => this.addBlackHole());
+        ?.addEventListener("click", () => {
+          this.addBlackHole(
+            Math.random() * this.canvas.width,
+            Math.random() * this.canvas.height
+          );
+        });
 
-      // Canvas click
+      // Canvas click - Shift + Click for black holes
       this.canvas.addEventListener("click", (e) => {
         const rect = this.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -1469,9 +1526,23 @@ document.addEventListener("DOMContentLoaded", () => {
           this.addStar(x, y);
         }
       });
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        if (this.canvas) {
+          const container = this.canvas.parentElement;
+          if (container) {
+            this.canvas.width = container.clientWidth;
+          }
+        }
+      });
     }
   }
 
+  // Initialize when DOM is loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    const galaxy = new ParticleGalaxy();
+  });
   // =========================
   // DEMO 2: AI ART GENERATOR
   // =========================
@@ -1645,7 +1716,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       this.ctx = this.canvas.getContext("2d");
-      this.canvas.width = 500;
+      this.canvas.width = this.canvas.parentElement.clientWidth;
       this.canvas.height = 300;
 
       this.isPlaying = false;
@@ -1655,39 +1726,39 @@ document.addEventListener("DOMContentLoaded", () => {
       this.audioData = new Array(64).fill(0);
 
       this.setupControls();
-      scheduler.add(() => this.update());
-
+      this.animate();
       console.log("✓ Music Visualizer ready");
     }
 
-    update() {
-      if (isPaused) return;
-
+    animate() {
       if (!this.isPlaying) {
         this.drawIdle();
-        return;
+      } else {
+        this.simulateAudio();
       }
 
-      this.simulateAudio();
+      requestAnimationFrame(() => this.animate());
     }
 
     drawIdle() {
       const time = Date.now() * 0.001;
+      const width = this.canvas.width;
+      const height = this.canvas.height;
 
       // Clear with fade
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.fillStyle = "rgba(15, 23, 42, 0.1)";
+      this.ctx.fillRect(0, 0, width, height);
 
       // Draw calming waves
       for (let i = 0; i < 3; i++) {
-        const y = this.canvas.height / 2 + Math.sin(time + i * 0.5) * 50;
+        const y = height / 2 + Math.sin(time + i * 0.5) * 50;
         const alpha = 0.2 + Math.sin(time * 2 + i) * 0.1;
 
         this.ctx.strokeStyle = `rgba(180, 76, 255, ${alpha})`;
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
 
-        for (let x = 0; x < this.canvas.width; x += 10) {
+        for (let x = 0; x < width; x += 10) {
           const waveY = y + Math.sin(time * 2 + x * 0.01 + i) * 20;
           if (x === 0) this.ctx.moveTo(x, waveY);
           else this.ctx.lineTo(x, waveY);
@@ -1703,6 +1774,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     simulateAudio() {
       const time = Date.now() * 0.001;
+      const width = this.canvas.width;
+      const height = this.canvas.height;
 
       // Update audio data (simulated)
       for (let i = 0; i < this.audioData.length; i++) {
@@ -1710,8 +1783,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Clear with fade
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.fillStyle = "rgba(15, 23, 42, 0.1)";
+      this.ctx.fillRect(0, 0, width, height);
 
       // Draw based on visual style
       if (this.visualStyle === "spectrum") {
@@ -1720,6 +1793,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.drawWaves();
       } else if (this.visualStyle === "kaleidoscope") {
         this.drawKaleidoscope();
+      } else if (this.visualStyle === "particle-wave") {
+        this.drawParticleWave();
       } else {
         this.drawParticles();
       }
@@ -1732,45 +1807,51 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       document.getElementById("amplitudeValue").textContent =
         avgFreq.toFixed(3);
+      document.getElementById("latencyValue").textContent = Math.round(
+        Math.random() * 10
+      );
+
+      // Update volume bar
+      const volumeBar = document.getElementById("volumeBar");
+      if (volumeBar) {
+        volumeBar.style.width = `${avgFreq * 100}%`;
+      }
     }
 
     drawSpectrum() {
-      const barWidth = this.canvas.width / this.audioData.length;
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+      const barWidth = width / this.audioData.length;
 
       for (let i = 0; i < this.audioData.length; i++) {
-        const height =
-          this.audioData[i] * this.canvas.height * this.sensitivity;
+        const barHeight = this.audioData[i] * height * this.sensitivity;
         const x = i * barWidth;
-        const y = this.canvas.height - height;
+        const y = height - barHeight;
 
-        const gradient = this.ctx.createLinearGradient(
-          x,
-          y,
-          x,
-          this.canvas.height
-        );
+        const gradient = this.ctx.createLinearGradient(x, y, x, height);
         gradient.addColorStop(0, "#b44cff");
         gradient.addColorStop(1, "#00ffff");
 
         this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(x, y, barWidth - 1, height);
+        this.ctx.fillRect(x, y, barWidth - 1, barHeight);
       }
     }
 
     drawWaves() {
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+
       this.ctx.strokeStyle = "#00ffff";
       this.ctx.lineWidth = 2;
 
       for (let i = 0; i < 3; i++) {
         this.ctx.beginPath();
 
-        for (let x = 0; x < this.canvas.width; x += 5) {
-          const index = Math.floor(
-            (x / this.canvas.width) * this.audioData.length
-          );
+        for (let x = 0; x < width; x += 5) {
+          const index = Math.floor((x / width) * this.audioData.length);
           const intensity = this.audioData[index];
           const y =
-            this.canvas.height / 2 +
+            height / 2 +
             Math.sin(x * 0.02 + Date.now() * 0.001 * (i + 1)) *
               intensity *
               100 *
@@ -1785,8 +1866,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     drawKaleidoscope() {
-      const centerX = this.canvas.width / 2;
-      const centerY = this.canvas.height / 2;
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
       const segments = 12;
       const maxRadius = Math.min(centerX, centerY);
 
@@ -1811,14 +1894,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     drawParticles() {
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+
       // Add new particles
       if (Math.random() < this.sensitivity * 0.1) {
         const intensity =
           this.audioData[Math.floor(Math.random() * this.audioData.length)];
 
         this.particles.push({
-          x: Math.random() * this.canvas.width,
-          y: this.canvas.height,
+          x: Math.random() * width,
+          y: height,
           vx: (Math.random() - 0.5) * 4,
           vy: -Math.random() * 10 - 5,
           radius: intensity * 10 + 2,
@@ -1838,7 +1924,7 @@ document.addEventListener("DOMContentLoaded", () => {
         p.vy += 0.2;
         p.life -= 0.01;
 
-        if (p.life <= 0 || p.y > this.canvas.height + 100) {
+        if (p.life <= 0 || p.y > height + 100) {
           this.particles.splice(i, 1);
           continue;
         }
@@ -1853,39 +1939,101 @@ document.addEventListener("DOMContentLoaded", () => {
       this.ctx.globalAlpha = 1;
     }
 
+    drawParticleWave() {
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+
+      this.ctx.strokeStyle = "#b44cff";
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+
+      for (let x = 0; x < width; x += 10) {
+        const index = Math.floor((x / width) * this.audioData.length);
+        const intensity = this.audioData[index];
+        const y =
+          height / 2 +
+          Math.sin(x * 0.03 + Date.now() * 0.002) *
+            intensity *
+            80 *
+            this.sensitivity;
+
+        if (x === 0) this.ctx.moveTo(x, y);
+        else this.ctx.lineTo(x, y);
+
+        // Draw particles along the wave
+        this.ctx.fillStyle = "#00ffff";
+        this.ctx.beginPath();
+        this.ctx.arc(x, y, intensity * 6, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+
+      this.ctx.stroke();
+    }
+
     setupControls() {
-      document.getElementById("micBtn")?.addEventListener("click", () => {
-        this.isPlaying = true;
-        alert(
-          "Microphone simulation started. In a real implementation, this would access your microphone."
-        );
-      });
+      const micBtn = document.getElementById("micBtn");
+      const toneBtn = document.getElementById("toneBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const visualStyleSelect = document.getElementById("visualStyle");
+      const sensitivitySlider = document.getElementById("sensitivitySlider");
 
-      document.getElementById("toneBtn")?.addEventListener("click", () => {
-        this.isPlaying = true;
-        alert("Tone generator simulation started.");
-      });
-
-      document.getElementById("stopBtn")?.addEventListener("click", () => {
-        this.isPlaying = false;
-        this.particles = [];
-      });
-
-      document
-        .getElementById("visualStyle")
-        ?.addEventListener("change", (e) => {
-          this.visualStyle = e.target.value;
+      if (micBtn) {
+        micBtn.addEventListener("click", () => {
+          this.isPlaying = true;
+          document.getElementById("audioStatus").innerHTML =
+            '<i class="fas fa-microphone"></i> Listening...';
         });
+      }
 
-      document
-        .getElementById("sensitivitySlider")
-        ?.addEventListener("input", (e) => {
+      if (toneBtn) {
+        toneBtn.addEventListener("click", () => {
+          this.isPlaying = true;
+          document.getElementById("audioStatus").innerHTML =
+            '<i class="fas fa-wave-square"></i> Generating Tone...';
+        });
+      }
+
+      if (stopBtn) {
+        stopBtn.addEventListener("click", () => {
+          this.isPlaying = false;
+          this.particles = [];
+          document.getElementById("audioStatus").innerHTML =
+            '<i class="fas fa-microphone-slash"></i> Ready';
+          document.getElementById("volumeBar").style.width = "0%";
+        });
+      }
+
+      if (visualStyleSelect) {
+        visualStyleSelect.addEventListener("change", (e) => {
+          this.visualStyle = e.target.value;
+          this.particles = []; // Clear particles when changing style
+        });
+      }
+
+      if (sensitivitySlider) {
+        sensitivitySlider.addEventListener("input", (e) => {
           this.sensitivity = parseFloat(e.target.value);
           document.getElementById("sensitivityValue").textContent =
             this.sensitivity.toFixed(1);
         });
+      }
     }
   }
+
+  // Initialize when DOM is loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    const musicVisualizer = new MusicVisualizer();
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+      if (musicVisualizer.canvas) {
+        const container = musicVisualizer.canvas.parentElement;
+        if (container) {
+          musicVisualizer.canvas.width = container.clientWidth;
+        }
+      }
+    });
+  });
 
   // =========================
   // INITIALIZE ALL DEMOS

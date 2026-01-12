@@ -963,109 +963,115 @@
   <!-- Lab Grid -->
   <div class="lab-grid stagger-children">
     <!-- Particle Galaxy Demo -->
-    <div class="demo-card card" data-demo="galaxy">
-      <div class="demo-card-inner">
-        <div class="demo-header">
-          <div class="demo-icon-wrapper">
-            <div class="demo-icon">🌌</div>
-            <div class="icon-glow"></div>
-          </div>
-          <div class="demo-title-wrapper">
-            <h3 class="demo-title">Particle Galaxy</h3>
-            <div class="demo-tags">
-              <span class="demo-tag visual">
-                <i class="fas fa-eye"></i>
-                Visual
-              </span>
-              <span class="demo-tag physics">
-                <i class="fas fa-atom"></i>
-                Physics
-              </span>
-            </div>
-          </div>
-          <button class="demo-fullscreen" data-demo="galaxy">
-            <i class="fas fa-expand"></i>
-          </button>
+<div class="demo-card card" data-demo="galaxy">
+  <div class="demo-card-inner">
+    <div class="demo-header">
+      <div class="demo-icon-wrapper">
+        <div class="demo-icon">🌌</div>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="demo-title-wrapper">
+        <h3 class="demo-title">Particle Galaxy</h3>
+        <div class="demo-tags">
+          <span class="demo-tag visual">
+            <i class="fas fa-eye"></i>
+            Visual
+          </span>
+          <span class="demo-tag physics">
+            <i class="fas fa-atom"></i>
+            Physics
+          </span>
         </div>
-        
-        <p class="demo-description">
-          Interactive galaxy simulation with gravitational forces. Click and 
-          drag to create stars and black holes that influence particle motion.
-        </p>
-        
-        <div class="demo-content">
-          <div class="canvas-container">
-            <canvas id="galaxyCanvas" class="demo-canvas"></canvas>
-            <div class="canvas-overlay">
-              <div class="fps-display">
-                <i class="fas fa-tachometer-alt"></i>
-                <span id="galaxyFPS">60</span> FPS
-              </div>
-              <div class="interaction-hint">
-                <i class="fas fa-mouse-pointer"></i>
-                Click to interact
-              </div>
-            </div>
+      </div>
+      <button class="demo-fullscreen" data-demo="galaxy">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+    
+    <p class="demo-description">
+      Interactive galaxy simulation with gravitational forces. Click and 
+      drag to create stars and black holes that influence particle motion.
+    </p>
+    
+    <div class="demo-content">
+      <div class="canvas-container">
+        <canvas id="galaxyCanvas" class="demo-canvas"></canvas>
+        <div class="canvas-overlay">
+          <div class="fps-display">
+            <i class="fas fa-tachometer-alt"></i>
+            <span id="galaxyFPS">60</span> FPS
           </div>
-          
-          <div class="demo-controls">
-            <div class="control-group">
-              <div class="control-label">
-                <i class="fas fa-sun"></i>
-                <span>Stars</span>
-              </div>
-              <div class="control-buttons">
-                <button id="galaxyAddStar" class="control-btn">
-                  <i class="fas fa-plus"></i>
-                  Add Star
-                </button>
-                <button id="galaxyReset" class="control-btn outline">
-                  <i class="fas fa-redo"></i>
-                  Reset
-                </button>
-              </div>
-            </div>
-            
-            <div class="control-sliders">
-              <div class="slider-group">
-                <div class="slider-label">
-                  <i class="fas fa-weight-hanging"></i>
-                  <span>Gravity</span>
-                  <span class="slider-value" id="gravityValue">1.0</span>
-                </div>
-                <input type="range" id="gravitySlider" min="0" max="3" step="0.1" value="1.0" 
-                       class="slider cosmic">
-              </div>
-              
-              <div class="slider-group">
-                <div class="slider-label">
-                  <i class="fas fa-trailer"></i>
-                  <span>Trails</span>
-                  <span class="slider-value" id="trailValue">0.8</span>
-                </div>
-                <input type="range" id="trailSlider" min="0" max="1" step="0.1" value="0.8" 
-                       class="slider cosmic">
-              </div>
-            </div>
-          </div>
-          
-          <div class="demo-stats">
-            <div class="stat-item">
-              <i class="fas fa-star"></i>
-              <span>Stars: <strong id="starCount">150</strong></span>
-            </div>
-            <div class="stat-item">
-              <i class="fas fa-black-hole"></i>
-              <span>Black Holes: <strong id="blackHoleCount">0</strong></span>
-            </div>
-            <div class="stat-item">
-              <i class="fas fa-expand-arrows-alt"></i>
-              <span>Scale: <strong id="galaxyScale">1.0x</strong></span>
-            </div>
+          <div class="interaction-hint">
+            <i class="fas fa-mouse-pointer"></i>
+            Shift + Click to add black hole
           </div>
         </div>
       </div>
+      
+      <div class="demo-controls">
+        <div class="control-group">
+          <div class="control-label">
+            <i class="fas fa-sun"></i>
+            <span>Stars</span>
+          </div>
+          <div class="control-buttons">
+            <button id="galaxyAddStar" class="control-btn">
+              <i class="fas fa-plus"></i>
+              Add Star
+            </button>
+            <!-- ADD THIS BUTTON -->
+            <button id="galaxyAddBlackHole" class="control-btn outline">
+              <i class="fas fa-black-hole"></i>
+              Add Black Hole
+            </button>
+            <button id="galaxyReset" class="control-btn outline">
+              <i class="fas fa-redo"></i>
+              Reset
+            </button>
+          </div>
+        </div>
+        
+        <div class="control-sliders">
+          <div class="slider-group">
+            <div class="slider-label">
+              <i class="fas fa-weight-hanging"></i>
+              <span>Gravity</span>
+              <span class="slider-value" id="gravityValue">1.0</span>
+            </div>
+            <input type="range" id="gravitySlider" min="0" max="3" step="0.1" value="1.0" 
+                   class="slider cosmic">
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label">
+              <i class="fas fa-trailer"></i>
+              <span>Trails</span>
+              <span class="slider-value" id="trailValue">0.8</span>
+            </div>
+            <input type="range" id="trailSlider" min="0" max="1" step="0.1" value="0.8" 
+                   class="slider cosmic">
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-stats">
+        <div class="stat-item">
+          <i class="fas fa-star"></i>
+          <span>Stars: <strong id="starCount">150</strong></span>
+        </div>
+        <div class="stat-item">
+          <!-- Fix Font Awesome icon class -->
+          <i class="fas fa-circle"></i>
+          <span>Black Holes: <strong id="blackHoleCount">0</strong></span>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-expand-arrows-alt"></i>
+          <span>Scale: <strong id="galaxyScale">1.0x</strong></span>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
     <!-- AI Art Generator Demo -->
     <div class="demo-card card" data-demo="ai-art">
@@ -1173,118 +1179,117 @@
       </div>
     </div>
 
-    <!-- Music Visualizer Demo -->
-    <div class="demo-card card" data-demo="music">
-      <div class="demo-card-inner">
-        <div class="demo-header">
-          <div class="demo-icon-wrapper">
-            <div class="demo-icon">🎵</div>
-            <div class="icon-glow"></div>
-          </div>
-          <div class="demo-title-wrapper">
-            <h3 class="demo-title">Music Visualizer</h3>
-            <div class="demo-tags">
-              <span class="demo-tag audio">
-                <i class="fas fa-music"></i>
-                Audio
-              </span>
-              <span class="demo-tag realtime">
-                <i class="fas fa-bolt"></i>
-                Real-time
-              </span>
-            </div>
-          </div>
-          <button class="demo-fullscreen" data-demo="music">
-            <i class="fas fa-expand"></i>
-          </button>
+   <!-- Music Visualizer Demo -->
+<div class="demo-card card" data-demo="music">
+  <div class="demo-card-inner">
+    <div class="demo-header">
+      <div class="demo-icon-wrapper">
+        <div class="demo-icon">🎵</div>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="demo-title-wrapper">
+        <h3 class="demo-title">Music Visualizer</h3>
+        <div class="demo-tags">
+          <span class="demo-tag audio">
+            <i class="fas fa-music"></i>
+            Audio
+          </span>
+          <span class="demo-tag realtime">
+            <i class="fas fa-bolt"></i>
+            Real-time
+          </span>
         </div>
-        
-        <p class="demo-description">
-          Real-time audio-reactive visuals. Connect microphone or use 
-          built-in tone generator with multiple visualization modes.
-        </p>
-        
-        <div class="demo-content">
-          <div class="canvas-container">
-            <canvas id="musicCanvas" class="demo-canvas"></canvas>
-            <div class="canvas-overlay">
-              <div class="audio-status" id="audioStatus">
-                <i class="fas fa-microphone-slash"></i>
-                Ready
-              </div>
-              <div class="volume-meter">
-                <div class="volume-bar" id="volumeBar"></div>
-              </div>
-            </div>
+      </div>
+      <button class="demo-fullscreen" data-demo="music">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+    
+    <p class="demo-description">
+      Real-time audio-reactive visuals. Connect microphone or use 
+      built-in tone generator with multiple visualization modes.
+    </p>
+    
+    <div class="demo-content">
+      <div class="canvas-container">
+        <canvas id="musicCanvas" class="demo-canvas"></canvas>
+        <div class="canvas-overlay">
+          <div class="audio-status" id="audioStatus">
+            <i class="fas fa-microphone-slash"></i>
+            Ready
           </div>
-          
-          <div class="demo-controls">
-            <div class="control-group">
-              <div class="control-label">
-                <i class="fas fa-volume-up"></i>
-                <span>Audio Source</span>
-              </div>
-              <div class="control-buttons">
-                <button id="micBtn" class="control-btn primary">
-                  <i class="fas fa-microphone"></i>
-                  Microphone
-                </button>
-                <button id="toneBtn" class="control-btn">
-                  <i class="fas fa-wave-square"></i>
-                  Generate Tone
-                </button>
-                <button id="stopBtn" class="control-btn outline">
-                  <i class="fas fa-stop"></i>
-                  Stop
-                </button>
-              </div>
-            </div>
-            
-            <div class="control-selectors">
-              <div class="selector-group">
-                <div class="selector-label">
-                  <i class="fas fa-eye"></i>
-                  <span>Visual Style</span>
-                </div>
-                <select id="visualStyle" class="style-selector">
-                  <option value="particles">Dancing Particles</option>
-                  <option value="waves">Wave Forms</option>
-                  <option value="spectrum">Frequency Spectrum</option>
-                  <option value="kaleidoscope">Kaleidoscope</option>
-                  <option value="particle-wave">Particle Waves</option>
-                </select>
-              </div>
-              
-              <div class="slider-group">
-                <div class="slider-label">
-                  <i class="fas fa-sliders-h"></i>
-                  <span>Sensitivity</span>
-                  <span class="slider-value" id="sensitivityValue">0.7</span>
-                </div>
-                <input type="range" id="sensitivitySlider" min="0.1" max="2" step="0.1" value="0.7" 
-                       class="slider audio">
-              </div>
-            </div>
-          </div>
-          
-          <div class="demo-stats">
-            <div class="stat-item">
-              <i class="fas fa-wave-square"></i>
-              <span>Freq: <strong id="frequencyValue">0</strong> Hz</span>
-            </div>
-            <div class="stat-item">
-              <i class="fas fa-chart-line"></i>
-              <span>Amp: <strong id="amplitudeValue">0.00</strong></span>
-            </div>
-            <div class="stat-item">
-              <i class="fas fa-tachometer-alt"></i>
-              <span>Latency: <strong id="latencyValue">0</strong>ms</span>
-            </div>
+          <div class="volume-meter">
+            <div class="volume-bar" id="volumeBar"></div>
           </div>
         </div>
       </div>
+      
+      <div class="demo-controls">
+        <div class="control-group">
+          <div class="control-label">
+            <i class="fas fa-volume-up"></i>
+            <span>Audio Source</span>
+          </div>
+          <div class="control-buttons">
+            <button id="micBtn" class="control-btn primary">
+              <i class="fas fa-microphone"></i>
+              Microphone
+            </button>
+            <button id="toneBtn" class="control-btn">
+              <i class="fas fa-wave-square"></i>
+              Generate Tone
+            </button>
+            <button id="stopBtn" class="control-btn outline">
+              <i class="fas fa-stop"></i>
+              Stop
+            </button>
+          </div>
+        </div>
+        
+        <div class="control-selectors">
+          <div class="selector-group">
+            <div class="selector-label">
+              <i class="fas fa-eye"></i>
+              <span>Visual Style</span>
+            </div>
+            <select id="visualStyle" class="style-selector">
+              <option value="particles">Dancing Particles</option>
+              <option value="waves">Wave Forms</option>
+              <option value="spectrum">Frequency Spectrum</option>
+              <option value="kaleidoscope">Kaleidoscope</option>
+              <option value="particle-wave">Particle Waves</option>
+            </select>
+          </div>
+          
+          <div class="slider-group">
+            <div class="slider-label">
+              <i class="fas fa-sliders-h"></i>
+              <span>Sensitivity</span>
+              <span class="slider-value" id="sensitivityValue">0.7</span>
+            </div>
+            <input type="range" id="sensitivitySlider" min="0.1" max="2" step="0.1" value="0.7" 
+                   class="slider audio">
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-stats">
+        <div class="stat-item">
+          <i class="fas fa-wave-square"></i>
+          <span>Freq: <strong id="frequencyValue">0</strong> Hz</span>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Amp: <strong id="amplitudeValue">0.00</strong></span>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Latency: <strong id="latencyValue">0</strong>ms</span>
+        </div>
+      </div>
     </div>
-
+  </div>
+</div>
     
   <!-- Lab Footer -->
 
