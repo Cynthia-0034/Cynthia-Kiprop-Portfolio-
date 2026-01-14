@@ -1,3 +1,297 @@
+/* =========================================================
+   Cynthia Portfolio - Clean, practical, fully functional JS
+   (Fixes: hamburger, smooth scroll, Formspree modal, etc.)
+========================================================= */
+// =========================
+// Premium Loader (toned down)
+// =========================
+(function initPremiumLoader() {
+  const loader = document.getElementById("page-loader");
+  const particleWrap = document.getElementById("qParticles");
+  const status = document.getElementById("qStatus");
+  if (!loader) return;
+
+  document.body.classList.add("is-loading");
+
+  // Minimal particles (performance-safe)
+  if (particleWrap) {
+    const colors = ["#00ffff", "#8b5cf6", "#ec4899"];
+    const N = 30;
+    for (let i = 0; i < N; i++) {
+      const p = document.createElement("span");
+      p.className = "p";
+      p.style.left = `${Math.random() * 100}%`;
+      p.style.bottom = `${Math.random() * 30}px`;
+      p.style.background = colors[i % colors.length];
+      p.style.animationDuration = `${2.2 + Math.random() * 2.8}s`;
+      p.style.animationDelay = `${Math.random() * 1.8}s`;
+      p.style.opacity = `${0.35 + Math.random() * 0.55}`;
+      p.style.width = p.style.height = `${2 + Math.random() * 2}px`;
+      particleWrap.appendChild(p);
+    }
+  }
+
+  // Soft rotating status text (not spammy)
+  const messages = [
+    "Initializing experience…",
+    "Loading portfolio assets…",
+    "Warming up visuals…",
+  ];
+  let i = 0;
+  const t = setInterval(() => {
+    if (status) status.textContent = messages[i % messages.length];
+    i++;
+  }, 650);
+
+  const MIN_SHOW_MS = 2000;
+  const start = performance.now();
+
+  window.addEventListener("load", () => {
+    const elapsed = performance.now() - start;
+    const wait = Math.max(0, MIN_SHOW_MS - elapsed);
+
+    setTimeout(() => {
+      clearInterval(t);
+      loader.classList.add("is-hidden");
+      document.body.classList.remove("is-loading");
+      document.body.classList.add("loaded");
+      setTimeout(() => loader.remove(), 900);
+    }, wait);
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", () => {
+  // -------------------------
+  // Sticky navbar on scroll
+  // -------------------------
+  const navbar = document.querySelector(".navbar");
+  const hero = document.querySelector("#home");
+
+  const handleSticky = () => {
+    if (!navbar) return;
+    const heroHeight = hero ? hero.offsetHeight : 600;
+    const triggerY = Math.min(140, heroHeight * 0.25);
+    navbar.classList.toggle("is-sticky", window.scrollY > triggerY);
+  };
+
+  window.addEventListener("scroll", handleSticky, { passive: true });
+  handleSticky();
+
+  // -------------------------
+  // Mobile menu (Hamburger)
+  // -------------------------
+  const hamburger = document.querySelector(".hamburger");
+  const mobileMenu = document.querySelector("#mobile-menu");
+  const menuOverlay = document.querySelector(".menu-overlay");
+
+  const setMenuOpen = (open) => {
+    if (!hamburger) return;
+    hamburger.classList.toggle("active", open);
+    hamburger.setAttribute("aria-expanded", String(open));
+
+    if (mobileMenu) mobileMenu.classList.toggle("active", open);
+    if (menuOverlay) menuOverlay.classList.toggle("active", open);
+
+    const icon = hamburger.querySelector("i");
+    if (icon) {
+      icon.classList.toggle("fa-bars", !open);
+      icon.classList.toggle("fa-times", open);
+    }
+    document.body.classList.toggle("menu-open", open);
+  };
+
+  if (hamburger) {
+    hamburger.addEventListener("click", () => {
+      const open = !hamburger.classList.contains("active");
+      setMenuOpen(open);
+    });
+  }
+
+  if (menuOverlay) {
+    menuOverlay.addEventListener("click", () => setMenuOpen(false));
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setMenuOpen(false);
+  });
+
+  document.querySelectorAll("#mobile-menu a.nav-link").forEach((a) => {
+    a.addEventListener("click", () => setMenuOpen(false));
+  });
+
+  // -------------------------
+  // Smooth scroll (anchors)
+  // -------------------------
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", (e) => {
+      const href = anchor.getAttribute("href");
+      if (!href || href === "#") return;
+      const target = document.querySelector(href);
+      if (!target) return;
+
+      e.preventDefault();
+      const navOffset = navbar ? navbar.offsetHeight + 16 : 90;
+      const y = target.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    });
+  });
+
+  // -------------------------
+  // Typewriter (optional)
+  // -------------------------
+  const tw = document.getElementById("typewriter");
+  if (tw) {
+    const texts = [
+      "Full-Stack Developer",
+      "Data Analyst",
+      "UI/UX Designer",
+      "Creative Problem Solver",
+    ];
+    let t = 0;
+    let c = 0;
+    let del = false;
+
+    const tick = () => {
+      const full = texts[t];
+      c = del ? c - 1 : c + 1;
+      tw.textContent = full.slice(0, c);
+
+      const doneTyping = !del && c === full.length;
+      const doneDeleting = del && c === 0;
+
+      let delay = del ? 35 : 55;
+      if (doneTyping) {
+        delay = 1100;
+        del = true;
+      } else if (doneDeleting) {
+        del = false;
+        t = (t + 1) % texts.length;
+        delay = 300;
+      }
+      setTimeout(tick, delay);
+    };
+    tick();
+  }
+
+  // -------------------------
+  // Project modal (index)
+  // -------------------------
+  window.openProjectModal = function (html) {
+    const modal = document.getElementById("project-modal");
+    if (!modal) return;
+    const body = modal.querySelector(".modal-body");
+    if (body) body.innerHTML = html || "";
+    modal.classList.add("active");
+    document.body.classList.add("modal-open");
+  };
+
+  window.closeProjectModal = function () {
+    const modal = document.getElementById("project-modal");
+    if (!modal) return;
+    modal.classList.remove("active");
+    document.body.classList.remove("modal-open");
+  };
+
+  // Close project modal by clicking backdrop area
+  const projectModal = document.getElementById("project-modal");
+  if (projectModal) {
+    projectModal.addEventListener("click", (e) => {
+      if (e.target === projectModal) window.closeProjectModal();
+    });
+  }
+
+  // -------------------------
+  // Thank-you modal (Formspree)
+  // -------------------------
+  const thanksModal = document.getElementById("thanksModal");
+  const thanksMsg = document.getElementById("thanksMessage");
+
+  const showThanksModal = (message) => {
+    if (!thanksModal) return;
+    if (thanksMsg && message) thanksMsg.textContent = message;
+    thanksModal.classList.add("is-open");
+    thanksModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  };
+
+  const closeThanksModal = () => {
+    if (!thanksModal) return;
+    thanksModal.classList.remove("is-open");
+    thanksModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  };
+
+  window.closeThanksModal = closeThanksModal;
+
+  if (thanksModal) {
+    thanksModal.addEventListener("click", (e) => {
+      const close = e.target.closest("[data-close='true']");
+      if (close) closeThanksModal();
+    });
+  }
+
+  // -------------------------
+  // Contact form submit (stay on page + popup)
+  // -------------------------
+  const contactForm = document.getElementById("contact-form");
+  const formStatus = document.getElementById("form-status");
+  const sendBtn = document.getElementById("sendBtn");
+
+  if (contactForm) {
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (sendBtn) {
+        sendBtn.classList.add("is-sending");
+        sendBtn.disabled = true;
+      }
+      if (formStatus) {
+        formStatus.textContent = "";
+      }
+
+      try {
+        const formData = new FormData(contactForm);
+        const endpoint = contactForm.getAttribute("action");
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          body: formData,
+          headers: { Accept: "application/json" },
+        });
+
+        if (res.ok) {
+          contactForm.reset();
+          showThanksModal(
+            "Thanks for reaching out! I’ll get back to you within 24 hours."
+          );
+          if (formStatus) {
+            formStatus.textContent =
+              "Message received ✅ I’ll reply within 24 hours.";
+            formStatus.style.color = "#22c55e";
+          }
+        } else {
+          if (formStatus) {
+            formStatus.textContent =
+              "Oops — something went wrong. Please try again.";
+            formStatus.style.color = "#ef4444";
+          }
+        }
+      } catch (err) {
+        if (formStatus) {
+          formStatus.textContent =
+            "Network error — please check your internet and try again.";
+          formStatus.style.color = "#ef4444";
+        }
+      } finally {
+        if (sendBtn) {
+          sendBtn.classList.remove("is-sending");
+          sendBtn.disabled = false;
+        }
+      }
+    });
+  }
+});
+
 // =========================
 // PART 1: NAVBAR & BACKGROUND EFFECTS (keep this from your current script)
 // =========================
@@ -1089,11 +1383,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Close modal on outside click
-    document.getElementById("project-modal").addEventListener("click", (e) => {
-      if (e.target === document.getElementById("project-modal")) {
-        closeProjectModal();
-      }
-    });
+    const projectModalEl = document.getElementById("project-modal");
+    if (projectModalEl)
+      projectModalEl.addEventListener("click", (e) => {
+        if (e.target === document.getElementById("project-modal")) {
+          closeProjectModal();
+        }
+      });
 
     // Mobile menu toggle
     const hamburger = document.querySelector(".hamburger");
@@ -1101,19 +1397,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuOverlay = document.querySelector(".menu-overlay");
 
     if (hamburger) {
+      const setHamburgerState = (isOpen) => {
+        hamburger.classList.toggle("active", isOpen);
+        if (mobileMenu) mobileMenu.classList.toggle("active", isOpen);
+        if (menuOverlay) menuOverlay.classList.toggle("active", isOpen);
+
+        hamburger.setAttribute("aria-expanded", String(isOpen));
+        const icon = hamburger.querySelector("i");
+        if (icon) {
+          icon.classList.toggle("fa-bars", !isOpen);
+          icon.classList.toggle("fa-times", isOpen);
+        }
+      };
+
       hamburger.addEventListener("click", () => {
-        hamburger.classList.toggle("active");
-        mobileMenu.classList.toggle("active");
-        menuOverlay.classList.toggle("active");
+        const isOpen = !hamburger.classList.contains("active");
+        setHamburgerState(isOpen);
+      });
+
+      // Close on any mobile link click
+      document.querySelectorAll(".mobile-menu a.nav-link").forEach((link) => {
+        link.addEventListener("click", () => setHamburgerState(false));
+      });
+
+      // Close on ESC
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setHamburgerState(false);
       });
     }
 
     // Close mobile menu when clicking overlay
     if (menuOverlay) {
       menuOverlay.addEventListener("click", () => {
-        hamburger.classList.remove("active");
-        mobileMenu.classList.remove("active");
-        menuOverlay.classList.remove("active");
+        if (hamburger) hamburger.classList.remove("active");
+        if (mobileMenu) mobileMenu.classList.remove("active");
+        if (menuOverlay) menuOverlay.classList.remove("active");
+        if (hamburger) hamburger.setAttribute("aria-expanded", "false");
+        const icon = hamburger ? hamburger.querySelector("i") : null;
+        if (icon) {
+          icon.classList.add("fa-bars");
+          icon.classList.remove("fa-times");
+        }
       });
     }
 
@@ -1128,7 +1452,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
           // Close mobile menu if open
-          if (hamburger.classList.contains("active")) {
+          if (hamburger && hamburger.classList.contains("active")) {
             hamburger.classList.remove("active");
             mobileMenu.classList.remove("active");
             menuOverlay.classList.remove("active");
@@ -1142,17 +1466,18 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Back to top button visibility
+    // Back to top button visibility (guarded)
     const backToTop = document.querySelector(".back-to-top");
-
-    window.addEventListener("scroll", () => {
-      if (window.pageYOffset > 300) {
-        backToTop.classList.add("visible");
-      } else {
-        backToTop.classList.remove("visible");
-      }
-    });
-
+    if (backToTop) {
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (window.pageYOffset > 300) backToTop.classList.add("visible");
+          else backToTop.classList.remove("visible");
+        },
+        { passive: true }
+      );
+    }
     // Lightbox functions
     window.openLightbox = function (imageSrc, caption) {
       const lightbox = document.getElementById("lightbox");
@@ -1193,7 +1518,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
           const formData = new FormData(this);
-          const response = await fetch(this.action, {
+          const endpoint = this.dataset.endpoint || this.action;
+          const response = await fetch(endpoint, {
             method: "POST",
             body: formData,
             headers: {
@@ -1202,9 +1528,13 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
           if (response.ok) {
-            formStatus.textContent = "Message sent successfully!";
-            formStatus.style.color = "#4ade80";
             contactForm.reset();
+            showThanksModal(
+              "Thanks for reaching out! I’ll get back to you within 24 hours."
+            );
+            formStatus.textContent =
+              "Message received. I’ll reply within 24 hours.";
+            formStatus.style.color = "#4ade80";
           } else {
             formStatus.textContent =
               "Oops! Something went wrong. Please try again.";
@@ -1226,6 +1556,38 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+
+  // Thank-you modal helpers (Formspree)
+  function showThanksModal(message) {
+    const modal = document.getElementById("thanksModal");
+    const msg = document.getElementById("thanksMessage");
+    if (!modal) return;
+
+    if (msg && message) msg.textContent = message;
+
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeThanksModal() {
+    const modal = document.getElementById("thanksModal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
+
+  // Close modal on click (backdrop / close btn) + ESC
+  document.addEventListener("click", (e) => {
+    const closeTarget = e.target.closest("[data-close='true']");
+    if (closeTarget) closeThanksModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeThanksModal();
+  });
+
   function showDemoComingSoon() {
     alert("Demo coming soon! The climate dashboard will be available shortly.");
     // Or show a nicer modal/popup
@@ -1318,6 +1680,8 @@ document.addEventListener("DOMContentLoaded", () => {
           radius: Math.random() * 2 + 1,
           color: `hsl(${Math.random() * 100 + 200}, 100%, 70%)`,
           trail: [],
+          twinklePhase: Math.random() * Math.PI * 2,
+          twinkleSpeed: Math.random() * 1.6 + 0.4,
         });
       }
       this.updateStats();
@@ -1332,6 +1696,8 @@ document.addEventListener("DOMContentLoaded", () => {
         radius: Math.random() * 3 + 2,
         color: `hsl(${Math.random() * 360}, 100%, 70%)`,
         trail: [],
+        twinklePhase: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 1.6 + 0.4,
       });
       this.updateStats();
     }
@@ -1406,11 +1772,40 @@ document.addEventListener("DOMContentLoaded", () => {
           this.ctx.fill();
         });
 
-        // Draw particle
-        this.ctx.fillStyle = p.color;
+        // Draw particle (crisp + soft glow + twinkle)
+        const time = Date.now() * 0.001;
+        const twinkle =
+          Math.sin(time * p.twinkleSpeed + p.twinklePhase) * 0.22 + 0.88;
+        const r = p.radius * twinkle;
+
+        this.ctx.save();
+        this.ctx.globalCompositeOperation = "lighter";
+
+        // soft glow
+        const glow = this.ctx.createRadialGradient(
+          p.x,
+          p.y,
+          0,
+          p.x,
+          p.y,
+          r * 4.2
+        );
+        glow.addColorStop(0, `rgba(255, 255, 255, ${0.85})`);
+        glow.addColorStop(0.35, `rgba(170, 220, 255, ${0.28})`);
+        glow.addColorStop(1, "rgba(0,0,0,0)");
+
+        this.ctx.fillStyle = glow;
         this.ctx.beginPath();
-        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        this.ctx.arc(p.x, p.y, r * 4.2, 0, Math.PI * 2);
         this.ctx.fill();
+
+        // star core
+        this.ctx.fillStyle = `rgba(255, 255, 255, ${0.9})`;
+        this.ctx.beginPath();
+        this.ctx.arc(p.x, p.y, Math.max(0.9, r), 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.restore();
       });
 
       // Draw black holes
@@ -1695,8 +2090,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const styleSelect = document.getElementById("styleSelect");
       if (styleSelect) {
         styleSelect.addEventListener("change", (e) => {
-          document.getElementById("styleValue").textContent =
-            e.target.selectedOptions[0].text;
+          const label = e.target.selectedOptions?.[0]?.text || e.target.value;
+          const badge = document.getElementById("currentStyle");
+          if (badge) badge.textContent = label.replace(/^[^A-Za-z0-9]+/, "");
+          this.generateArt();
         });
       }
     }
@@ -2084,6 +2481,24 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("✗ Shader Playground failed:", error);
   }
 
+  // Demo fullscreen buttons -> open standalone pages
+  const demoPageMap = {
+    "ai-art": "ai-art-generator.html",
+    music: "interactive-music.html",
+    "space-defender": "space-defender.html",
+    climate: "climate-dashboard-demo.html",
+    "create-viz": "create-viz-preview.html",
+  };
+
+  document.querySelectorAll(".demo-fullscreen").forEach((el) => {
+    if (el.tagName === "A") return; // anchors already work
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const key = el.getAttribute("data-demo");
+      const url = demoPageMap[key];
+      if (url) window.open(url, "_blank");
+    });
+  });
   console.log("✅ All demos initialized!");
 
   // Add debug borders to canvases
@@ -2094,300 +2509,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, 1000);
 });
-// Handles newsletter subscription with visual feedback
-newsletterForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  // Shows loading state, then success state
-  // Displays toast notification
-  showToast("🎉 Thanks for subscribing! You'll hear from me soon.");
-});
-function showToast(message) {
-  // Creates and displays temporary notification
-  // Animates in/out, auto-removes after 5 seconds
-}
-function createParticles() {
-  // Creates 30 floating particles with random properties
-  // Adds CSS animation for floating effect
-}
-// Adds scale and transform effects on hover
-socialCards.forEach((card) => {
-  card.addEventListener("mouseenter", function () {
-    this.style.transform = "translateY(-5px) scale(1.02)";
-  });
-});
-// Automatically updates copyright year
-const currentYear = new Date().getFullYear();
-yearSpan.textContent = `© ${currentYear} Cynthia Kiprop`;
-// Add this to your main JavaScript file
-document.addEventListener("DOMContentLoaded", function () {
-  // Handle all demo/case study buttons
-  const projectButtons = document.querySelectorAll(
-    '.action-button.demo, .action-button.case-study, .action-button[href$=".htm"]'
-  );
-
-  projectButtons.forEach((button) => {
-    button.addEventListener("click", function (e) {
-      e.preventDefault(); // Prevent default navigation
-
-      const href = this.getAttribute("href");
-      const buttonType = this.classList.contains("demo")
-        ? "demo"
-        : "case-study";
-      const projectTitle =
-        this.closest(".portfolio-card")?.querySelector("h3")?.textContent ||
-        "Project";
-
-      // Check if the page exists
-      checkPageExists(href).then((exists) => {
-        if (exists) {
-          // Page exists, navigate to it
-          window.open(href, "_blank");
-        } else {
-          // Show coming soon modal
-          showComingSoonModal(projectTitle, buttonType);
-        }
-      });
-    });
-  });
-});
-
-// Function to check if a page exists
-async function checkPageExists(url) {
-  try {
-    const response = await fetch(url, { method: "HEAD" });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-// Function to show a nice coming soon modal
-function showComingSoonModal(projectName, type) {
-  // Remove any existing modal
-  const existingModal = document.getElementById("comingSoonModal");
-  if (existingModal) existingModal.remove();
-
-  // Create modal
-  const modal = document.createElement("div");
-  modal.id = "comingSoonModal";
-  modal.className = "coming-soon-modal";
-  modal.innerHTML = `
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-icon">🚀</div>
-        <h3>${
-          type === "demo" ? "Demo Coming Soon" : "Case Study in Progress"
-        }</h3>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>The ${type} for <strong>${projectName}</strong> is currently under development.</p>
-        <p>I'm working hard to bring you the best experience possible!</p>
-        <div class="progress-indicator">
-          <div class="progress-bar">
-            <div class="progress-fill"></div>
-          </div>
-          <span class="progress-text">Estimated completion: Soon!</span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" onclick="window.location.href='#contact'">
-          Get Notified
-        </button>
-        <button class="btn btn-secondary close-modal">
-          Close
-        </button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  // Add CSS for modal if not already present
-  if (!document.querySelector("#comingSoonModalStyles")) {
-    const styles = document.createElement("style");
-    styles.id = "comingSoonModalStyles";
-    styles.textContent = `
-      .coming-soon-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .modal-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(5px);
-      }
-      
-      .modal-content {
-        position: relative;
-        background: linear-gradient(135deg, #1e293b, #0f172a);
-        border-radius: 20px;
-        padding: 30px;
-        max-width: 500px;
-        width: 90%;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        animation: modalSlideIn 0.3s ease;
-      }
-      
-      @keyframes modalSlideIn {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      
-      .modal-header {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 25px;
-      }
-      
-      .modal-icon {
-        font-size: 2.5rem;
-      }
-      
-      .modal-header h3 {
-        flex: 1;
-        color: #f8fafc;
-        font-size: 1.5rem;
-        margin: 0;
-      }
-      
-      .modal-close {
-        background: none;
-        border: none;
-        color: #94a3b8;
-        font-size: 2rem;
-        cursor: pointer;
-        line-height: 1;
-        padding: 0;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-      }
-      
-      .modal-close:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #f8fafc;
-      }
-      
-      .modal-body {
-        color: #cbd5e1;
-        margin-bottom: 25px;
-      }
-      
-      .modal-body p {
-        margin-bottom: 15px;
-        line-height: 1.5;
-      }
-      
-      .progress-indicator {
-        margin-top: 25px;
-      }
-      
-      .progress-bar {
-        height: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-        overflow: hidden;
-        margin-bottom: 10px;
-      }
-      
-      .progress-fill {
-        height: 100%;
-        width: 70%;
-        background: linear-gradient(90deg, #818cf8, #c4b5fd);
-        border-radius: 4px;
-        animation: progressPulse 2s ease-in-out infinite;
-      }
-      
-      @keyframes progressPulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-      }
-      
-      .progress-text {
-        font-size: 0.9rem;
-        color: #94a3b8;
-      }
-      
-      .modal-footer {
-        display: flex;
-        gap: 15px;
-        justify-content: flex-end;
-      }
-      
-      .btn {
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: none;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      
-      .btn-primary {
-        background: linear-gradient(135deg, #818cf8, #6366f1);
-        color: white;
-      }
-      
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-      }
-      
-      .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: #e2e8f0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-      
-      .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.15);
-      }
-    `;
-    document.head.appendChild(styles);
-  }
-
-  // Close modal functionality
-  modal
-    .querySelector(".modal-close")
-    .addEventListener("click", () => modal.remove());
-  modal
-    .querySelector(".close-modal")
-    .addEventListener("click", () => modal.remove());
-  modal
-    .querySelector(".modal-overlay")
-    .addEventListener("click", () => modal.remove());
-
-  // Close on escape key
-  document.addEventListener("keydown", function closeOnEscape(e) {
-    if (e.key === "Escape") {
-      modal.remove();
-      document.removeEventListener("keydown", closeOnEscape);
-    }
-  });
-}
