@@ -16,11 +16,49 @@
     />
   </head>
 
-  <body class="loaded">
-    <!-- Loading Animation -->
-    <div class="loading-text">Loading...</div>
+  <body class="is-loading">
+    <!-- Page Loader (shows ~2s) -->
+   <!-- Premium Loader (toned down) -->
+<div id="page-loader" class="q-loader" role="status" aria-live="polite" aria-label="Loading">
+  <div class="q-bg"></div>
 
-    <!-- Custom Cursor -->
+  <div class="q-wrap">
+    <div class="q-orbits" aria-hidden="true">
+      <span class="q-orbit o1"></span>
+      <span class="q-orbit o2"></span>
+      <span class="q-orbit o3"></span>
+    </div>
+
+    <div class="q-card">
+      <div class="q-brand">
+        <span class="q-mark" aria-hidden="true"></span>
+        <div class="q-text">
+          <div class="q-name">Cynthia Kiprop</div>
+          <div class="q-sub">Design • Web • Data</div>
+        </div>
+      </div>
+
+      <div class="q-status" id="qStatus">Initializing experience…</div>
+
+      <div class="q-progress" aria-hidden="true">
+        <span class="q-bar"></span>
+      </div>
+    </div>
+
+    <div class="q-particles" id="qParticles" aria-hidden="true"></div>
+  </div>
+</div>
+
+
+          <div class="loader-progress" aria-hidden="true">
+            <span class="loader-bar"></span>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+<!-- Custom Cursor -->
     <div class="custom-cursor"></div>
 
     <!-- Header with Navbar -->
@@ -46,7 +84,7 @@
         <div class="menu-overlay"></div>
 
         <!-- Mobile menu -->
-        <div class="mobile-menu">
+        <div class="mobile-menu" id="mobile-menu">
           <ul>
             <li><a href="#home" class="nav-link">Home</a></li>
             <li><a href="#about" class="nav-link">About</a></li>
@@ -57,8 +95,10 @@
         </div>
 
         <!-- Hamburger -->
-        
-      </nav>
+        <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <i class="fas fa-bars"></i>
+        </button>
+</nav>
     </header>
 
     <!-- Main Content -->
@@ -106,21 +146,7 @@
     </div>
   </div>
 </section>
-
-        <!-- Scroll Indicator - moved outside hero-content -->
-        <div class="scroll-indicator">
-          <div class="mouse">
-            <div class="wheel"></div>
-          </div>
-          <div class="arrows">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-      </section>
-
-      <!-- About Section -->
+<!-- About Section -->
 <section id="about" class="about section">
   <div class="section-header">
    
@@ -170,8 +196,39 @@
       </div>
     </div>
 
+    <div class="highlights-card card-hover">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Quick Highlights</h3>
+        </div>
+        <div class="highlights-content">
+          <ul class="highlights-list">
+            <li><i class="fas fa-check-circle"></i> Clean, modern UI + solid engineering</li>
+            <li><i class="fas fa-check-circle"></i> Data-first thinking (dashboards, insights, automation)</li>
+            <li><i class="fas fa-check-circle"></i> Fast communication + delivery mindset</li>
+          </ul>
+          <div class="highlights-cta">
+            <a href="#contact" class="btn btn-primary">
+              <i class="fas fa-paper-plane"></i>
+              Let’s work together
+            </a>
+            <a href="./case-studies.html" class="btn btn-secondary" target="_blank" rel="noopener">
+              <i class="fas fa-book-open"></i>
+              View case studies
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+
     <!-- Skills Card -->
-    <div class="skills-card card-hover">
+    
+    <div class="about-side">
+      <div class="skills-card card-hover">
+
       <div class="card-header">
         <div class="icon-wrapper">
           <i class="fas fa-cogs"></i>
@@ -275,7 +332,10 @@
     </div>
 
     <!-- Experience Highlights -->
-    <div class="experience-card card-hover">
+    
+      
+    </div>
+<div class="experience-card card-hover">
       <div class="card-header">
         <div class="icon-wrapper">
           <i class="fas fa-briefcase"></i>
@@ -422,8 +482,8 @@
   >
     <div class="project-image">
       <img 
-        src="./10.jpg" 
-        alt="Coffee Shop Branding Design with modern logo and packaging" 
+        src="./7.jpg" 
+        alt="Logo Design project preview" 
         loading="lazy"
       >
       <div class="project-hover">
@@ -438,9 +498,9 @@
         <div class="project-category">
           <span class="category-tag design">Graphic Design</span>
         </div>
-        <h3 class="project-title">Coffee Shop Branding</h3>
+        <h3 class="project-title">Logo Design</h3>
         <p class="project-description">
-          Complete brand identity including logo design, packaging, and marketing materials for a startup coffee shop.
+          Modern logo design for a brand—crafted for clarity, memorability, and versatile use across print and digital.
         </p>
       </div>
       <div class="project-tech">
@@ -859,17 +919,16 @@
       </div>
       
       <div class="action-buttons">
-  <a href="./climate-dashboard-demo.html" class="action-button demo" target="_blank">
-    <div class="button-emoji">🎮</div>
-    <div class="button-content">
-      <span class="button-title">Live Demo</span>
-      <span class="button-subtitle">Try it yourself!</span>
-    </div>
-    <i class="fas fa-arrow-right button-arrow"></i>
-  </a>
-</div>
-        
-        <a href="./coming-soon.html" class="action-button github" target="_blank">
+        <a href="./climate-dashboard-demo.html" class="action-button demo" target="_blank" rel="noopener">
+          <div class="button-emoji">🎮</div>
+          <div class="button-content">
+            <span class="button-title">Live Demo</span>
+            <span class="button-subtitle">Try it yourself!</span>
+          </div>
+          <i class="fas fa-arrow-right button-arrow"></i>
+        </a>
+
+        <a href="./coming-soon.html" class="action-button github" target="_blank" rel="noopener">
           <div class="button-emoji">💻</div>
           <div class="button-content">
             <span class="button-title">Source Code</span>
@@ -878,7 +937,7 @@
           <i class="fas fa-arrow-right button-arrow"></i>
         </a>
         
-        <a href="./case studies.html" class="action-button case-study" target="_blank">
+        <a href="./case-studies.html" class="action-button case-study" target="_blank" rel="noopener">
           <div class="button-emoji">📚</div>
           <div class="button-content">
             <span class="button-title">Case Study</span>
@@ -916,28 +975,16 @@
   </div>
 </div>
 
-   <!-- Project Modal Template -->
-<div class="project-modal" id="project-modal">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeProjectModal()">
-      <i class="fas fa-times"></i>
-    </button>
-    <div class="modal-body">
-      <!-- Content loaded dynamically -->
-    </div>
-  </div>
-</div>
-
 <!-- Interactive Lab Section -->
 <section id="lab" class="lab section">
   <!-- Lab Header -->
   <div class="lab-header">
     
-    <h1 class="lab-title">
+    <h2 class="lab-title">
       <span class="title-main">Interactive</span>
       <span class="title-accent">Lab</span>
       <span class="title-emoji">🧪</span>
-    </h1>
+    </h2>
     <p class="lab-subtitle">
       <span class="subtitle-underline">Explore cutting-edge web technologies</span>
       through interactive demos. From beautiful visualizations to complex algorithms.
@@ -1291,6 +1338,140 @@
   </div>
 </div>
     
+
+
+<!-- Climate Dashboard Demo (Link-out) -->
+<div class="demo-card card" data-demo="climate">
+  <div class="demo-card-inner">
+    <div class="demo-header">
+      <div class="demo-icon-wrapper">
+        <div class="demo-icon">📊</div>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="demo-title-wrapper">
+        <h3 class="demo-title">Climate Dashboard</h3>
+        <div class="demo-tags">
+          <span class="demo-tag visual">
+            <i class="fas fa-chart-area"></i>
+            Data Viz
+          </span>
+          <span class="demo-tag algorithm">
+            <i class="fas fa-filter"></i>
+            Insights
+          </span>
+        </div>
+      </div>
+      <a class="demo-fullscreen" href="climate-dashboard-demo.html" target="_blank" rel="noopener">
+        <i class="fas fa-expand"></i>
+      </a>
+    </div>
+
+    <p class="demo-description">
+      A clean analytics-style dashboard demo with interactive charts and UI controls.
+      Built to feel like a real product, not a school project.
+    </p>
+
+    <div class="demo-actions">
+      <a class="control-btn primary" href="climate-dashboard-demo.html" target="_blank" rel="noopener">
+        <i class="fas fa-play"></i>
+        Open Demo
+      </a>
+      <a class="control-btn outline" href="case-studies.html" target="_blank" rel="noopener">
+        <i class="fas fa-book-open"></i>
+        Case Study
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Space Defender Demo (Link-out) -->
+<div class="demo-card card" data-demo="space-defender">
+  <div class="demo-card-inner">
+    <div class="demo-header">
+      <div class="demo-icon-wrapper">
+        <div class="demo-icon">🚀</div>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="demo-title-wrapper">
+        <h3 class="demo-title">Space Defender</h3>
+        <div class="demo-tags">
+          <span class="demo-tag visual">
+            <i class="fas fa-gamepad"></i>
+            Game
+          </span>
+          <span class="demo-tag physics">
+            <i class="fas fa-bolt"></i>
+            Canvas
+          </span>
+        </div>
+      </div>
+      <a class="demo-fullscreen" href="space-defender.html" target="_blank" rel="noopener">
+        <i class="fas fa-expand"></i>
+      </a>
+    </div>
+
+    <p class="demo-description">
+      A fun mini arcade demo showcasing smooth animation, collision logic, and
+      responsive controls. Quick dopamine, clean code.
+    </p>
+
+    <div class="demo-actions">
+      <a class="control-btn primary" href="space-defender.html" target="_blank" rel="noopener">
+        <i class="fas fa-play"></i>
+        Play
+      </a>
+      <a class="control-btn outline" href="#contact">
+        <i class="fas fa-paper-plane"></i>
+        Hire Me
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Create Viz Preview (Link-out) -->
+<div class="demo-card card" data-demo="create-viz">
+  <div class="demo-card-inner">
+    <div class="demo-header">
+      <div class="demo-icon-wrapper">
+        <div class="demo-icon">🧩</div>
+        <div class="icon-glow"></div>
+      </div>
+      <div class="demo-title-wrapper">
+        <h3 class="demo-title">Create-a-Viz</h3>
+        <div class="demo-tags">
+          <span class="demo-tag algorithm">
+            <i class="fas fa-magic"></i>
+            Builder
+          </span>
+          <span class="demo-tag ai">
+            <i class="fas fa-layer-group"></i>
+            UI/UX
+          </span>
+        </div>
+      </div>
+      <a class="demo-fullscreen" href="create-viz-preview.html" target="_blank" rel="noopener">
+        <i class="fas fa-expand"></i>
+      </a>
+    </div>
+
+    <p class="demo-description">
+      A visualization builder preview that shows how you think: design systems,
+      interactions, and product-ready polish.
+    </p>
+
+    <div class="demo-actions">
+      <a class="control-btn primary" href="create-viz-preview.html" target="_blank" rel="noopener">
+        <i class="fas fa-play"></i>
+        Open Preview
+      </a>
+      <a class="control-btn outline" href="README.md" target="_blank" rel="noopener">
+        <i class="fas fa-code"></i>
+        Notes
+      </a>
+    </div>
+  </div>
+</div>
+
   <!-- Lab Footer -->
 
 </section>
@@ -1324,7 +1505,7 @@
       <form
         id="contact-form"
         class="contact-form"
-        action="https://formspree.io/f/mojaqqpe"
+        action="https://formspree.io/f/mojaqqpe" 
         method="POST"
       >
         <div class="form-header">
@@ -1657,5 +1838,28 @@
     </script>
 
     <script src="./script.js" defer></script>
+  
+    <!-- Thank you modal (Formspree) -->
+    <div class="thanks-modal" id="thanksModal" aria-hidden="true">
+      <div class="thanks-backdrop" data-close="true"></div>
+      <div class="thanks-card" role="dialog" aria-modal="true" aria-labelledby="thanksTitle">
+        <button class="thanks-close" type="button" aria-label="Close" data-close="true">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="thanks-icon">
+          <i class="fas fa-paper-plane"></i>
+        </div>
+        <h3 id="thanksTitle">Message received 🚀</h3>
+        <p id="thanksMessage">
+          Thanks for reaching out! I’ll get back to you within <strong>24 hours</strong>.
+        </p>
+        <div class="thanks-actions">
+          <button class="btn btn-primary" type="button" data-close="true">
+            Awesome
+          </button>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
